@@ -51,6 +51,8 @@ rather than examples to follow.
 - `make task T=t1` runs the acceptance tests for one task.
 - `make coverage` checks coverage of the currency module.
 - `make verify` checks the local setup.
+- Python runs through `uv run`. There is no activated virtual environment, so
+  use `uv run pytest ...` rather than `python3 -m pytest`.
 
 ## Code style
 

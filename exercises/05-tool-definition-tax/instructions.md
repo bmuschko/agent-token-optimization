@@ -20,12 +20,25 @@ character, then cut it and measure again.
    Look for the tool definitions line and note it as a **percentage of the
    window**, not just an absolute number.
 
-   **Other agents**: send an identical trivial request twice, once with your
-   MCP servers enabled and once with them disabled, and diff the input token
-   count the proxy reports.
+   **Why `/context` and not the proxy.** The tax is a share of the window,
+   and only the agent knows what is in its window. The proxy sees requests
+   on the wire; it cannot tell tool schemas from conversation, and with
+   on-demand tool loading the deferred schemas never cross the wire at all.
+   `/context` reports the window itself, with tool definitions as their own
+   line.
+
+   **Other agents**, which have no window view: send an identical trivial
+   request twice, once with your MCP servers enabled and once with them
+   disabled, and diff the input token count the proxy reports. Reset between
+   the two so each reading stands alone:
 
    ```bash
-   headroom stats     # before and after
+   headroom savings --reset
+   # one trivial request, servers enabled
+   headroom savings          # before
+   headroom savings --reset
+   # the same request, servers disabled
+   headroom savings          # after
    ```
 
 2. **Record it as a share of a typical request.** "31% of every request I send"
@@ -62,7 +75,5 @@ T7 question both ways.
   trade-off.
 - **You cannot tell which servers are loaded.** Claude Code: `/mcp`. Cursor and
   Copilot: your MCP settings panel.
-- **Replay mode.** `replays/tool-tax/` has a five-server session before and
-  after deferred loading.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

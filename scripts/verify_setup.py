@@ -28,6 +28,16 @@ def warn(message, fix):
     print(f"        {fix}")
 
 
+def check_uv():
+    """uv provides the interpreter and the test tooling."""
+    uv = shutil.which("uv")
+    if uv is None:
+        fail("uv not found on PATH", "see INSTALL.md, 'Prerequisites'")
+        return
+    version = subprocess.run([uv, "--version"], capture_output=True, text=True)
+    ok(version.stdout.strip() or "uv")
+
+
 def check_python():
     """Python 3.10 or later is required."""
     version = sys.version_info
@@ -51,7 +61,7 @@ def check_package():
 def check_pytest():
     """The regression suite must be green on a fresh clone."""
     if importlib.util.find_spec("pytest") is None:
-        fail("pytest is not installed", "pip install -r requirements.txt")
+        fail("pytest is not installed", "run: uv sync")
         return
     result = subprocess.run(
         [sys.executable, "-m", "pytest", "--no-header", "-p", "no:cacheprovider"],
@@ -90,6 +100,7 @@ def check_optional(command, label, fix):
 
 def main():
     print("\nChecking your setup\n")
+    check_uv()
     check_python()
     check_package()
     check_pytest()
@@ -97,7 +108,7 @@ def main():
 
     print("\nAgents and tooling\n")
     check_optional("headroom", "headroom",
-                   'pip install "headroom-ai[all]", then run: headroom doctor')
+                   'uv tool install "headroom-ai[all]==0.40.0", then run: headroom doctor')
     check_optional("node", "node", "needed only for npx ccusage")
     found_agent = any(shutil.which(c) for c in ("claude", "cursor", "copilot"))
     if found_agent:

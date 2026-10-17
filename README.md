@@ -25,11 +25,9 @@ an SSL-inspecting proxy is blocking a download.
 | [`tests/`](tests) | The regression suite. Green on a fresh clone and it must stay that way. |
 | [`tests/tasks/`](tests/tasks) | Acceptance tests for the seeded tasks. Red until you do the work. |
 | [`exercises/`](exercises) | Six exercises, each with `instructions.md` and a `solution/`. |
-| [`instructor-demo/`](instructor-demo) | The compression demo script, for the instructor. |
 | [`TASKS.md`](TASKS.md) | The eight tasks T1 to T8 you work with your agent. |
 | [`worksheet.csv`](worksheet.csv) | Where you record token counts during the session. |
 | [`decision-tree.md`](decision-tree.md) | The one-page handout from the end of the course. |
-| [`replays/`](replays) | Recorded sessions, for anyone who cannot run an agent live. |
 
 ## The two commands
 
@@ -52,15 +50,7 @@ the exercise is in
 
 ## Cost
 
-Budget roughly **$3** of your own token usage for the full session. If you
-cannot or would rather not run an agent live:
-
-```bash
-export REPLAY_MODE=true
-```
-
-Every exercise then works against [`replays/`](replays). Absolute numbers
-differ from a live run; the deltas the exercises measure still hold.
+Budget roughly **$3** of your own token usage for the full session.
 
 ## Which agent
 

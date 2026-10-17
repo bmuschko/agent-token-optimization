@@ -63,6 +63,38 @@ costs well under 200, and answers the T7 question just as completely.
 That ratio is the whole of Section 3 in miniature, and it holds whether or not
 you have a single MCP server connected.
 
+## What compression actually buys you
+
+Once the definitions are out of context, the next question is always whether to
+compress what the tools return. Run it yourself before you believe a number:
+
+```bash
+headroom savings            # durable report
+headroom dashboard          # live view, proxy must be running
+make test                   # the only verdict that counts
+```
+
+The headline claim for tool output compression is 60 to 95% fewer tokens. That
+figure describes **JSON-heavy payloads**. On coding agent traffic the same
+project reports roughly **15 to 20%**. Both numbers are true, and only one
+describes your workload.
+
+Take the generous half seriously, though, because cynicism is not the lesson. A
+real 18% on a bill you are already paying, with no behaviour change, is worth
+having. What makes it worth having is the test suite going green afterwards,
+not the token counter going down.
+
+## Questions this raises
+
+- **Is the compression lossy?** Originals are stored locally and the model can
+  retrieve the full text when it needs it. The honest answer to whether that is
+  safe enough for your repo is your own test suite, not the architecture.
+- **Why not just use compression and skip the rest?** Because it addresses one
+  row of the decision tree, the outputs you do not control. Context discipline
+  and model routing are bigger, cheaper, and free.
+- **Does it work with Cursor or Copilot?** `headroom wrap cursor` prints a
+  config to paste. `headroom wrap copilot` starts the proxy and launches.
+
 ## Common wrong turns
 
 - **Measuring in absolute tokens only.** The percentage is what makes it stick.

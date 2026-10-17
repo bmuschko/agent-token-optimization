@@ -14,6 +14,43 @@ If `doctor` is green and the counter is still zero, you probably started the
 agent in a different shell from the one that exported `ANTHROPIC_BASE_URL`. Use
 `headroom wrap <agent>` instead, which handles the environment for you.
 
+## `doctor` says `claude: not routed` while the session clearly works
+
+You ran `doctor` from a different directory than `headroom wrap`. Both read
+`.claude/settings.local.json` relative to their own working directory, so a
+wrap launched inside an exercise folder is invisible to a
+`doctor` run at the repository root, and the other way round. Run everything
+from the repository root. The `savings` row is right from any directory,
+because it comes from the proxy's own counters.
+
+## `headroom wrap claude` starts an older Claude Code
+
+Any of these when you first launch through `headroom wrap`, in Exercise 3:
+
+- A **Settings Error** dialog at launch naming a hook event such as
+  `StopFailure` as an invalid key
+- `/model` lists Opus 4.6, Sonnet 4.6 and Haiku 4.5 only, with your usual
+  model shown as "Custom model"
+- "There's an issue with the selected model", and the proxy log in
+  `~/.headroom/logs/proxy-8787.log` shows `status=404 ... model: fable`
+
+`headroom wrap` launches whichever `claude` is first on PATH **in the terminal
+you run it from**, which is often not the one your other terminals use. A tab
+opened before you installed or upgraded Claude Code still has the old PATH, so
+try a fresh shell first. Then check in that same terminal:
+
+```bash
+which claude && claude --version
+```
+
+If the version is behind the one that works elsewhere, upgrade or remove the
+stale install. For an npm copy that is `npm install -g
+@anthropic-ai/claude-code@latest`, or `npm uninstall -g
+@anthropic-ai/claude-code` so PATH falls through to the native one. Claude
+Code's auto-updater may already have replaced the files while the old process
+kept running, in which case quitting and relaunching is the whole fix. Either
+way, run `headroom savings --reset` again before you measure.
+
 ## A download is blocked, or SSL verification fails
 
 Almost always an SSL-inspecting corporate proxy. This is the single most common
@@ -21,17 +58,18 @@ setup problem and the reason this repo asks you to install a day ahead.
 
 - Try from a personal network to confirm that is the cause.
 - Ask IT for the corporate CA bundle and point `pip` and `npm` at it.
-- If neither is possible, use `REPLAY_MODE=true` and work from
-  [replays/](replays/). You will still be able to do every exercise.
 
 ## `make test` fails on a fresh clone
 
 It should not. Check in this order:
 
-1. Are you in the virtual environment? `which python3`
-2. Did `pip install -r requirements.txt` finish without errors?
-3. Is your Python 3.10 or later? `python3 --version`
+1. Is `uv` on your PATH? `uv --version`. If not, see
+   [INSTALL.md](INSTALL.md#prerequisites).
+2. Did `uv sync` finish without errors? Run it again; it is idempotent.
+3. On Windows, `make` does not exist. Run `uv run pytest` directly.
 
+There is no virtual environment to activate. `make test` runs `uv run pytest`,
+which uses the project environment whether or not your shell knows about it.
 If all three are fine and the suite still fails, open an issue with the output
 of `make verify`.
 

@@ -21,6 +21,23 @@ Reset the repo (`git checkout -- src tests` or `git stash`) and work the same
 six tasks on the **cheapest capable** model, escalating a task to the frontier
 model only after its acceptance tests fail **twice**.
 
+### How to measure each run
+
+This exercise compares money, and the proxy does not report money spent, only
+money avoided. `npx ccusage@latest session` prices a whole Claude Code session,
+output tokens and cache included, which is what cost per completed task needs.
+Give Run A and Run B their own sessions so each lands on its own line:
+
+```bash
+npx ccusage@latest session
+```
+
+Cursor and Copilot users: your own usage dashboard, per session.
+
+The proxy still earns one look during Run B. Reset the ledger before you start
+it, and afterwards `headroom savings --json` breaks the tokens down `by_model`,
+which tells you how much of the routed run the escalations ate.
+
 ### Compare
 
 | | Run A | Run B |
@@ -68,6 +85,5 @@ control run; without it you have nothing to compare against.
 - **Escalating mid-task made things more expensive.** Switching models
   invalidates the prefix cache. Escalate at a task boundary, not in the middle
   of a turn.
-- **Replay mode.** `replays/routing/` has both runs across all six tasks.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

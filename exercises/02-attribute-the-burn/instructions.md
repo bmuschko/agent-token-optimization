@@ -10,8 +10,8 @@ controllable thing is your biggest sink.
 
 ## Before you start
 
-Your agent is still routed through the proxy from Exercise 1. If you restarted
-anything, run `headroom doctor` again.
+Nothing to set up. The analyzers read the same session logs Exercise 1 did.
+Keep starting a fresh session per task so the lines stay separable.
 
 ## Steps
 
@@ -40,6 +40,14 @@ anything, run `headroom doctor` again.
    [INSTALL.md](../../INSTALL.md#usage-analyzers) for what each tool reports
    and what the substitutes are.
 
+   **Why these and not the proxy.** This exercise asks where the money went,
+   by task kind and by habit, and that is an attribution question. The proxy
+   counts tokens on the wire and knows nothing about which session or task
+   sent them. `ccusage` prices each session, including the output tokens the
+   proxy never sees, and `claude-usage-analyzer` ranks the sessions and names
+   the controllable sinks. Together they answer "how much" and "why"; the
+   proxy answers neither.
+
 4. **Answer two questions in chat:**
    - Which **kind** of task cost you the most per completed task?
    - What is your single biggest **controllable** token sink?
@@ -63,6 +71,5 @@ second group counts.
 - **`claude-usage-analyzer` reports nothing.** It reads `~/.claude/projects/`,
   so it only sees Claude Code sessions. Cursor and Copilot users should use
   their dashboards instead.
-- **Replay mode.** `replays/mixed-tasks/` has all four kinds pre-run.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

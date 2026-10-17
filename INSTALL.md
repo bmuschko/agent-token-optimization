@@ -14,24 +14,37 @@ when the repo, Python, and the test suite are all working.
 - [Headroom, the measuring proxy](#headroom-the-measuring-proxy)
 - [Usage analyzers](#usage-analyzers)
 - [Verify everything](#verify-everything)
-- [Working offline](#working-offline)
 
 ## Prerequisites
 
 | Tool | Version | Why |
 |---|---|---|
 | Git | any recent | cloning this repo |
-| Python | 3.10 or later | the sample project and Headroom |
+| uv | any recent | runs the sample project, its tests, and Headroom |
 | Node.js | 20 or later | `npx ccusage` |
+
+You do not install Python yourself. `uv` finds a compatible interpreter on the
+machine or downloads one, and creates the project environment on first use.
+
+```bash
+# macOS, Linux, WSL
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# or, with Homebrew
+brew install uv
+```
 
 ```bash
 git --version
-python3 --version
+uv --version
 node --version
 ```
 
-Node is only needed for `ccusage`. If you would rather not install it, the
-exercises still work; you lose one of the two analyzers.
+Node is only needed for `ccusage`, which Exercises 1, 2 and 4 read their
+numbers from, so do install it.
 
 ## The repository
 
@@ -40,19 +53,27 @@ git clone https://github.com/bmuschko/agent-token-optimization
 cd agent-token-optimization
 ```
 
-Create a virtual environment and install the project with its test
-dependencies:
+Create the environment and install the test tooling. One command, and it is
+safe to run again at any time:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
 ```
 
 Confirm the suite is green before you go any further:
 
 ```bash
 make test
+```
+
+Every `make` target is a thin wrapper over `uv run`, so there is nothing to
+activate. On Windows, which has no `make`, run the underlying commands
+directly:
+
+```powershell
+uv run pytest                                  # make test
+uv run pytest tests/tasks/test_t1_*.py -v      # make task T=t1
+uv run python scripts/verify_setup.py          # make verify
 ```
 
 ## An AI coding agent
@@ -107,23 +128,18 @@ reference:
 
 ## Headroom, the measuring proxy
 
-[Headroom](https://github.com/chopratejas/headroom) is the local proxy every
-exercise routes through. It measures tokens and, in Section 5, compresses tool
+[Headroom](https://github.com/chopratejas/headroom) is the local proxy
+Exercises 3 to 6 route through. It measures tokens and, in Section 5, compresses tool
 output. It runs entirely on your machine.
 
 ```bash
-pip install "headroom-ai[all]"
+uv tool install "headroom-ai[all]==0.40.0"
 ```
 
-There is also a Node package if you prefer it:
-
-```bash
-npm install headroom-ai
-```
-
-Requires Python 3.10 or later. The `[all]` extra pulls in the proxy, MCP server
-and evaluation support; granular extras such as `[proxy]` and `[mcp]` exist if
-you want a smaller install.
+`uv tool` gives Headroom its own isolated environment and puts `headroom` on
+your PATH, so it cannot conflict with the project. The `[all]` extra pulls in
+the proxy, MCP server and evaluation support; granular extras such as
+`[proxy]` and `[mcp]` exist if you want a smaller install.
 
 Wrap your agent in one command:
 
@@ -134,7 +150,7 @@ headroom wrap claude        # also: codex, copilot, cursor, aider, opencode
 `headroom wrap cursor` prints a configuration to paste into Cursor rather than
 launching it.
 
-Or run the proxy standalone and point your agent at it:
+Or run the proxy standalone and point your agent at it. The example below is for Claude Code; other agents use a different environment variable:
 
 ```bash
 headroom proxy --port 8787
@@ -145,12 +161,12 @@ Check routing and savings:
 
 ```bash
 headroom doctor      # confirms traffic is actually going through the proxy
-headroom stats       # token counts
+headroom savings     # token counts
 headroom dashboard   # live view, proxy must be running
 ```
 
-**Pin the version** noted in [requirements.txt](requirements.txt) so the whole
-room is on the same build.
+The version is **pinned** in the install command above so the whole room is
+on the same build. `headroom --version` should print 0.40.0.
 
 ## Usage analyzers
 
@@ -219,8 +235,9 @@ Budget roughly **$3** of token usage for the full session.
 make verify
 ```
 
-This checks your Python version, that the package imports, that the regression
-suite passes, and that the optional tools are on your PATH. It prints a green
+This checks that `uv` is present and has a Python 3.10 or later, that the
+package imports, that the regression suite passes, and that the optional tools
+are on your PATH. It prints a green
 check when the required pieces are in place and a note for anything optional
 that is missing.
 
@@ -231,17 +248,6 @@ headroom doctor
 ```
 
 Both should be green before the session starts.
-
-## Working offline
-
-If you cannot run your agent live, or your network blocks the proxy:
-
-```bash
-export REPLAY_MODE=true
-```
-
-Every exercise then works against the recorded sessions in
-[replays/](replays/). See [replays/README.md](replays/README.md).
 
 ## If something goes wrong
 

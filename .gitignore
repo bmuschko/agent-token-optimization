@@ -1,1 +1,11 @@
 .DS_Store
+.moderne
+.serena
+.claude
+
+# Python, created by uv and pytest
+.venv/
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/

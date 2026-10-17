@@ -15,6 +15,22 @@ The spread comes from three habits, in descending order of cost:
 
 Nothing about the tasks themselves explains the difference.
 
+## Suggested prompts
+
+These are minimal, scoped prompts. You can phrase them however you like.
+
+**T1:**
+
+> The volume discount tiers in `src/orderly/pricing/discount.py` are supposed
+> to be inclusive of their thresholds, but an order of exactly $100.00 doesn't
+> get the 5% rate. Fix the off-by-one bug.
+
+**T2:**
+
+> Add a `--format json` flag to the `report` command in `src/orderly/cli.py`.
+> Text should remain the default. The summary dict is already built by
+> `build_summary`.
+
 ## T1 reference fix
 
 The tier table is inclusive of its thresholds, so the comparison has to be
@@ -63,6 +79,37 @@ if args.command == "report":
 `orderly.reporting.exporters` and add a third exporter there, which is more
 code than the task needs and breaks `test_text_remains_the_default` if it
 changes the default. Scoping the agent to `cli.py` and `summary.py` avoids it.
+
+## Reading the number
+
+Everything comes from `ccusage`, which reads the per-request usage that Claude
+Code logs under `~/.claude/projects/`:
+
+```bash
+npx ccusage@latest session              # one line per session, all five columns
+npx ccusage@latest daily --breakdown    # the same, split by model
+claude-usage-analyzer sessions          # top sessions by cost, with the sinks named
+```
+
+The plain report lists sessions by id with no project or time column, so the
+instructions take the id from the newest log file in the repository's folder
+under `~/.claude/projects/` and `grep` for it. `ccusage session --id <id>`
+also exists, but it prints only totals, not the four token columns.
+
+Column mapping to the worksheet: Input is `input_tokens`, Output is
+`output_tokens`, Cache Create is `cache_write`, Cache Read is `cache_read`,
+Cost (USD) is `cost_usd`. All of them are the figures the API returned, so a
+session's line is what that session cost at list price.
+
+Two things the tool cannot do, so that nobody expects them. It cannot split
+one session into tasks, which is why the exercise insists on a fresh session
+per task. And it cannot see agents other than Claude Code, which is why Cursor
+and Copilot users read their own dashboards.
+
+The Headroom proxy, when it enters in Exercise 3, adds a per-request view
+(`headroom dashboard`) and works for any agent. It is deliberately absent
+here. In passthrough mode it reports `saved 0 / N tokens  $0.0000`, a savings
+report with nothing to save, and it never sees output tokens.
 
 ## Reading the baseline
 
