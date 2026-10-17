@@ -34,6 +34,9 @@ You will measure two tasks and record one row each in
 | `attempts` | how many times you sent the agent back after a red test |
 | `tests_pass` | whether both test commands ended green |
 
+`cost_usd` covers every attempt, the failed ones included. A fix that took
+three tries cost three tries, and that is the number that goes on the row.
+
 Input will dwarf output by an order of magnitude. That is normal. Input is
 where the volume lives, and it is the lever the rest of the course pulls.
 
@@ -132,14 +135,19 @@ there, and the agent needs `src/` inside its working directory.
 
    ```bash
    id=$(basename "$(ls -t ~/.claude/projects/$(pwd | sed 's|[^A-Za-z0-9]|-|g')/*.jsonl | head -1)" .jsonl)
-   COLUMNS=200 npx ccusage@latest session | grep "${id:0:8}"
+   COLUMNS=200 npx ccusage@latest session | grep -E "^│ Session|${id:0:8}"
    ```
 
-   The row reads, left to right: Session, Agent, Models, Input, Output, Cache
-   Create, Cache Read, Total Tokens, Cost. Copy Input, Output, Cache Create,
-   Cache Read and Cost into the `T1,bug,baseline` row as `input_tokens`,
-   `output_tokens`, `cache_write`, `cache_read` and `cost_usd`. Add the model,
-   `attempts` and `tests_pass`.
+   That prints the header and your row:
+
+   ```
+   │ Session      │ Agent  │ Models      │ Input │ Output │ Cache Create │ Cache Read │ Total Tokens │ Cost (USD) │
+   │ 295f5935-... │ Claude │ - fable-5-1 │ 1,672 │ 206,325│      780,305 │ 26,585,566 │   27,573,868 │     $28.83 │
+   ```
+
+   Copy Input, Output, Cache Create, Cache Read and Cost into the
+   `T1,bug,baseline` row as `input_tokens`, `output_tokens`, `cache_write`,
+   `cache_read` and `cost_usd`. Add the model, `attempts` and `tests_pass`.
 
    This assumes no other Claude Code session is open in this repository, since
    a live one would own the newest file. `COLUMNS=200` stops the table from
