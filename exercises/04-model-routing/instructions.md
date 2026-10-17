@@ -34,9 +34,9 @@ npx ccusage@latest session
 
 Cursor and Copilot users: your own usage dashboard, per session.
 
-The proxy still earns one look during Run B. Reset the ledger before you start
-it, and afterwards `headroom savings --json` breaks the tokens down `by_model`,
-which tells you how much of the routed run the escalations ate.
+One more look is worth taking after Run B. `npx ccusage@latest daily
+--breakdown` splits the day's spend by model, which tells you how much of the
+routed run the escalations to the frontier model ate.
 
 ### Compare
 

@@ -42,43 +42,6 @@ acceptance tests and quietly destroys information: downstream code can no
 longer tell a partner who sent an empty note from one who sent none. If an
 agent proposes it, that is a good moment to talk about tests as a floor.
 
-## T5 reference fix
-
-`list_orders` grows a `limit` and `offset`, using the helpers that already
-exist in `utils/pagination.py`:
-
-```python
-from orderly.utils.pagination import clamp_limit, clamp_offset, page
-
-def list_orders(self, query: Dict[str, Any] = None) -> Dict[str, Any]:
-    query = query or {}
-    orders = self.repository.all()
-    if query.get("customer_id"):
-        orders = [o for o in orders if o["customer_id"] == query["customer_id"]]
-    if query.get("status"):
-        orders = [o for o in orders if o["status"] == query["status"]]
-
-    limit = clamp_limit(query.get("limit"))
-    offset = clamp_offset(query.get("offset"))
-    window = page(orders, limit, offset)
-    return {
-        "orders": window["items"],
-        "total": window["total"],
-        "limit": window["limit"],
-        "offset": window["offset"],
-        "has_more": window["has_more"],
-    }
-```
-
-A complete fixed file is in [orders.py](orders.py).
-
-**The discoverability point.** `utils/pagination.py` already does the clamping
-and slicing, and an agent working from a scoped context will usually miss it
-and write its own. That is the honest cost of scoping down, and it is worth
-naming: context discipline is not free, it trades token cost for the risk of
-reinventing something. The mitigation is one grep for `pagination` before you
-start, not a bigger context window.
-
 ## The lean rules file
 
 `CLAUDE.md` in this repo is about 90 lines, most of which earn nothing. A

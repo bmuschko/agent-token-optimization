@@ -7,6 +7,30 @@
 Put a number on the MCP tool definitions your agent loads before you type a
 character, then cut it and measure again.
 
+## Before you start: the proxy enters here
+
+Everything so far was read from the agent's own session logs. The last two
+exercises need the Headroom proxy: this one for agents other than Claude Code,
+Exercise 6 for everyone. Start it now, in one terminal at the repository root,
+in passthrough mode so it measures without changing anything:
+
+```bash
+headroom proxy --no-optimize
+```
+
+In a second terminal, also at the root, confirm it is up and launch your agent
+through it:
+
+```bash
+headroom doctor                                     # proxy, readiness, version must pass
+headroom wrap claude --no-proxy --project-settings  # or: codex | copilot | cursor
+```
+
+`doctor`'s `claude` row turns green only when run from the directory you
+launched `wrap` in. The `savings` row, which names how long ago the proxy saw
+a request, is the check that works from anywhere. If the launch misbehaves,
+[TROUBLESHOOTING.md](../../TROUBLESHOOTING.md) covers the usual causes.
+
 ## Steps
 
 1. **Measure the tax.**

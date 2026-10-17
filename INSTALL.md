@@ -129,7 +129,7 @@ reference:
 ## Headroom, the measuring proxy
 
 [Headroom](https://github.com/chopratejas/headroom) is the local proxy
-Exercises 3 to 6 route through. It measures tokens and, in Section 5, compresses tool
+Exercises 5 and 6 route through. It measures tokens and, in Section 5, compresses tool
 output. It runs entirely on your machine.
 
 ```bash

@@ -25,7 +25,7 @@ because it comes from the proxy's own counters.
 
 ## `headroom wrap claude` starts an older Claude Code
 
-Any of these when you first launch through `headroom wrap`, in Exercise 3:
+Any of these when you first launch through `headroom wrap`, in Exercise 5:
 
 - A **Settings Error** dialog at launch naming a hook event such as
   `StopFailure` as an invalid key

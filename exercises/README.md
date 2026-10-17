@@ -41,19 +41,19 @@ read the number.
 
 | Question | Tool | Exercises |
 |---|---|---|
-| How many input tokens did the agent send? | `headroom savings` | 3, 5, 6 |
-| What did it cost, and how much was output? | `npx ccusage@latest session` | 1, 2, 4 |
+| How many input tokens did the agent send? | `headroom savings` | 5, 6 |
+| What did it cost, and how much was output? | `npx ccusage@latest session` | 1, 2, 3, 4 |
 | Which sessions and habits ate the budget? | `ccwhy` | 2 |
 | What is in the window right now? | `/context` | 2, 5 |
 
-The rule underneath: **token deltas come from the proxy, money comes from
-`ccusage`.**
+The rule underneath: **every worksheet number comes from `ccusage`; the proxy
+is for per-turn views and for agents whose logs `ccusage` cannot read.**
 
 `headroom savings` counts every input token the proxy forwarded, per request,
-with the cached history that is resent every turn included. That is the exact
-quantity context discipline and compaction shrink, so it is the basis for
-every token drop in the course, and it works the same for every agent. It
-reports savings rather than spend: in passthrough mode the line reads
+with the cached history that is resent every turn included, and it does so
+for any agent. That makes it the instrument for the per-turn question in
+Exercise 6 and for agents `ccusage` cannot read in Exercise 5. It reports
+savings rather than spend: in passthrough mode the line reads
 `saved 0 / N tokens`, and `N` is your number. The ledger behind it is
 cumulative and global, so run `headroom savings --reset` before every measured
 run.

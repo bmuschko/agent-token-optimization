@@ -7,6 +7,12 @@
 Stop paying to replay stale history, and leave with a written plan rather than
 a good feeling.
 
+## Before you start
+
+The proxy from Exercise 5 should still be running, and your agent still
+launched through it. `headroom doctor` confirms both; its `savings` row names
+how long ago the proxy last saw a request.
+
 ## Steps
 
 1. **Take your longest session from today.** Probably the one from Exercise 2

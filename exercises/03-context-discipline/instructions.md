@@ -7,106 +7,154 @@ payoff. Take the time.
 
 ## Objective
 
-Cut the context on a task you already ran expensively, measure the drop, and
-prove the task still passes.
+Exercise 2 showed where the money goes: into context the agent did not need,
+resent with every request. This exercise cuts that context on one task,
+measures the drop, and proves the task still passes.
 
-## Before you start: the proxy enters here
+## Before you start
 
-This is the first exercise that needs per-request input-token counts for any
-agent, which is what the Headroom proxy provides. In one terminal, at the
-repository root, start it in passthrough mode so it measures without changing
-anything:
+Nothing new to install. The task is T3, which none of the earlier tasks
+touched, so the fixes from Exercises 1 and 2 can stay in the working tree.
 
-```bash
-headroom proxy --no-optimize
-```
+Two things to know before the first session:
 
-In a second terminal, also at the root, confirm it is up and launch your agent
-through it:
+- The rules file is edited **between** sessions, never during one. It sits
+  near the top of every request, and changing it mid-session invalidates the
+  prompt cache for everything after it.
+- After each run, `git status`. The agent may have touched more than the two
+  files the task names, and that is part of the run's cost.
 
-```bash
-headroom doctor                                     # proxy, readiness, version must pass
-headroom wrap claude --no-proxy --project-settings  # or: codex | copilot | cursor
-```
+## The measurement
 
-`doctor`'s `claude` row turns green only when run from the directory you
-launched `wrap` in. The `savings` row, which names how long ago the proxy saw
-a request, is the check that works from anywhere. If the launch misbehaves,
-[TROUBLESHOOTING.md](../../TROUBLESHOOTING.md) covers the usual causes.
+The drop you are after is in input tokens, nearly all of it the prefix resent
+with every request: the rules file, the files the agent loaded, the history.
+On a `ccusage` row that is Input plus Cache Create plus Cache Read, the same
+row Exercise 1 read, so the instrument is the same: one session per run, found
+by its id. The drop is computed on Total Tokens, which adds the small output
+figure to those three. It is close enough to the input-side drop that the
+distinction does not matter here.
+
+`ccwhy session` is the second look, and here it answers the question the
+exercise ends on: which change did the work. Its per-turn table shows the
+prefix shrinking, and its tool-call count shows how many files the agent read
+on its own.
+
+Cursor and Copilot users: your usage dashboard, one session per run.
 
 ## Steps
 
-1. **Pick T3 or T5**, whichever your agent handled expensively in Exercise 2.
-
-   - **T3** A record with no `notes` blows up in the validator
-   - **T5** `list_orders` returns everything, with no pagination
-
-2. **Baseline run.** Reproduce your bloated version: same session, same
-   attachments, same habits. Zero the ledger before you start and read it when
-   the task is done:
+1. **Look at the starting line, in a second terminal.**
 
    ```bash
-   headroom savings --reset
-   # work the task
-   headroom savings          # N in "saved 0 / N tokens" is the bloated row
+   make task T=t3        # expect: 2 failed, 1 passed
    ```
 
-   If you have been working in one long session since Exercise 1, that session
-   *is* your bloated version. Use it.
+   A record without `notes`, or with `notes` set to `None`, raises
+   `TypeError` instead of validating. The third test, that over-long notes
+   are still rejected, passes now and must keep passing.
 
-   **Why the proxy and not `ccusage` here.** The drop you are about to measure
-   is in input tokens, nearly all of it the prefix resent on every turn: the
-   rules file, the attachments, the history. `headroom savings` counts exactly
-   that, forwarded input per request with cached history included, for any
-   agent. `ccusage` prices a session, which is the right tool for money and the
-   wrong one for a before-and-after on context size.
+2. **The bloated run.** Reproduce the expensive habits deliberately: load a
+   large slice of the repo, carry that history into the task, keep the
+   overgrown rules file.
 
-3. **Scoped run.** Start over, changing exactly three things:
+   ```bash
+   id=$(uuidgen | tr 'A-Z' 'a-z')
+   claude --session-id "$id"
+   ```
 
-   - **A fresh session.** Not `/compact`, a new one.
-   - **Name the two or three files that matter** instead of loading the repo.
-     For T3 that is `ingest/parser.py` and `ingest/validator.py`. For T5 it is
-     `api/orders.py` and `utils/pagination.py`.
+   Two prompts, in this order. The first manufactures the history a long
+   session would have:
+
+   > Walk me through how an inbound partner feed is processed, from
+   > `src/orderly/ingest` to the API.
+
+   Then the task, with no file names:
+
+   > Partners sometimes omit optional fields such as `notes`. A record without
+   > `notes` currently raises `TypeError` during validation instead of
+   > validating cleanly. Fix it.
+
+   When it says it is done, verify in the second terminal, then `/exit` and
+   read the row:
+
+   ```bash
+   make task T=t3
+   make test
+   ```
+
+   ```bash
+   COLUMNS=200 npx ccusage@latest session | grep -E "^│ Session|${id:0:8}"
+   ccwhy session "$id"
+   ```
+
+   Record the row as `T3,bug,bloated`, with `attempts` and `tests_pass`, and
+   keep the `ccwhy` output. Then put the task back for the second run:
+
+   ```bash
+   git checkout -- src/orderly/ingest
+   make task T=t3        # red again
+   ```
+
+3. **Change three things between the sessions.**
+
    - **Trim the rules file.** `CLAUDE.md` in this repo is deliberately
-     overgrown. Cut it to what this task actually needs.
+     overgrown. Cut it to what this task needs: where the source and tests
+     live, how to run them, the rule that `make test` must stay green. Do not
+     commit it; `git checkout CLAUDE.md` restores it whenever you want.
+   - **Find the files with one search instead of a session.**
 
-   Measure it the same way, so the two rows share a basis:
+     ```bash
+     grep -rn "notes" src/orderly/ingest --include='*.py'
+     ```
+
+     One grep, one file list, and you start the next session already knowing
+     where to look. Both `parser.py` and `validator.py` are in it, and the
+     task needs both.
+   - **A fresh session**, which the loop gives you anyway. No overview prompt
+     this time.
+
+4. **The scoped run.** New id, and a prompt that names the files:
 
    ```bash
-   headroom savings --reset
-   # work the task in the fresh session
-   headroom savings          # the scoped row
+   id=$(uuidgen | tr 'A-Z' 'a-z')
+   claude --session-id "$id"
    ```
 
-4. **Run the tests.**
+   > A record without `notes` raises `TypeError` in the validator instead of
+   > validating cleanly. `src/orderly/ingest/parser.py` passes omitted
+   > optional fields through as `None`, and `src/orderly/ingest/validator.py`
+   > calls `len()` on them. Fix it so a missing or `None` optional field
+   > validates, while over-long notes are still rejected. Only those two
+   > files should change.
 
-   ```bash
-   make task T=t3        # or T=t5
-   make test             # must stay green
+   Verify, `/exit`, read the row the same way, and record it as
+   `T3,bug,scoped`.
+
+5. **Compare.**
+
+   ```
+   drop = (bloated Total Tokens - scoped Total Tokens) / bloated Total Tokens
    ```
 
-5. **Post three things in chat:** token drop as a percentage, pass or fail, and
-   which of the three changes you think did the most work. The drop is
-   `(bloated - scoped) / bloated`, both from the proxy.
+   Then put the two `ccwhy session` outputs side by side. The per-turn table
+   shows how much each request resent, and "Tools Used" shows how many files
+   the agent read on its own in each run. That is the evidence for which of
+   the three changes did the most work.
 
-## How to find the right files without reading everything
+6. **If time permits, scope T1 as well.** You have its baseline from Exercise
+   1. Put the bug back with `git checkout -- src/orderly/pricing/discount.py`,
+   run it once more in a fresh session with the trimmed rules file and a
+   prompt that names the file, and record `T1,bug,scoped`. One-character
+   fixes are where scoping gains the least in absolute terms and the most as
+   a percentage, which is worth seeing once.
 
-This is the question everyone asks. The answer is a throwaway search before the
-real session, not a bigger context:
-
-```bash
-grep -rn "notes" src/orderly/ingest --include=*.py
-```
-
-One grep, one file list, then start the real session already knowing where to
-look. The search costs almost nothing compared to letting the agent read its
-way there.
+7. **Post three things in chat:** the drop as a percentage, pass or fail, and
+   which of the three changes you think did the most work.
 
 ## Done when
 
-- Two runs recorded, with a measured delta
-- The acceptance tests for your task pass
-- `make test` is still green
+- `T3,bug,bloated` and `T3,bug,scoped` recorded, with a drop
+- The scoped run's acceptance tests pass and `make test` is still green
 
 A token drop with a red suite is a failed exercise, and a useful one. Say so
 in chat if it happens to you.
@@ -120,5 +168,11 @@ probably scoped away something the task needed.
 
 - **You trimmed the rules file mid-session and the cost went up.** That is the
   prefix cache being invalidated. Edit the rules file *between* sessions.
+- **The scoped run changed only one file.** T3 spans parser and validator. An
+  agent shown only the validator writes a defensive patch that hides the
+  problem. A fix that passes `make task T=t3` but leaves the parser alone is
+  worth reading closely.
+- **You reset `src/orderly/ingest` and the tests are still green.** The agent
+  fixed it somewhere else. `git status` shows where.
 
 The reference answers are in [solution/solution.md](solution/solution.md).
