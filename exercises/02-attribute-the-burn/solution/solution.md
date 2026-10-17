@@ -14,10 +14,10 @@ A typical attribution, in cost per completed task:
 
 | Kind | Relative cost | Why |
 |---|---|---|
-| Exploration (T7) | highest | reads widely to answer one question |
-| Refactor (T4) | high | touches three files, needs to see all of them |
 | Bug fix (T1) | middling | cheap once located, expensive while searching |
+| Refactor (T4) | high | touches three files, needs to see all of them |
 | Feature (T5) | middling | bounded, two files plus a test |
+| Exploration (T7) | highest | reads widely to answer one question |
 
 If your own ranking differs, that is a finding worth saying out loud. The most
 common variation: people who already work in tightly scoped sessions see
@@ -58,15 +58,17 @@ rules file**. Both are fixed overhead: you pay them on every request in the
 session whether or not they contribute anything to the task at hand. Tool
 definitions are Section 5. The rules file is Section 3.
 
-`claude-usage-analyzer` names these directly in its "Controllable Token Sinks"
-section, which is why it is worth running alongside `ccusage` rather than
-instead of it. One answers how much, the other answers why.
+`ccwhy` lists them under "Controllable Token Sinks", though as one line,
+"Cache creation (CLAUDE.md, MCP, system prompt)". It tells you the fixed
+prefix is the sink without separating your rules file and tools from the
+vendor's prompt. `/context` makes that split, which is why the two are run
+together: one says how much and why, the other says made of what.
 
 ## Common wrong turns
 
-- **Comparing raw totals instead of cost per completed task.** A refactor that
-  took one attempt can look worse than a bug fix that took three, until you
-  divide by tasks completed.
+- **Ranking kinds by `cost_usd` without looking at `tests_pass`.** A cheap row
+  for a task that never passed is not a cheap kind. It is spend with nothing
+  completed, and it ranks first, not last.
 - **Treating the vendor system prompt as a sink.** It is overhead, but it is
   not yours to cut. Ignore it.
 - **Measuring T7 by output tokens.** Exploration produces almost no output. All

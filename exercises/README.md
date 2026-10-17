@@ -43,8 +43,8 @@ read the number.
 |---|---|---|
 | How many input tokens did the agent send? | `headroom savings` | 3, 5, 6 |
 | What did it cost, and how much was output? | `npx ccusage@latest session` | 1, 2, 4 |
-| Which sessions and habits ate the budget? | `claude-usage-analyzer` | 2 |
-| What is in the window right now? | `/context` | 5 |
+| Which sessions and habits ate the budget? | `ccwhy` | 2 |
+| What is in the window right now? | `/context` | 2, 5 |
 
 The rule underneath: **token deltas come from the proxy, money comes from
 `ccusage`.**

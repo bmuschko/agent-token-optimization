@@ -185,33 +185,35 @@ npx ccusage@latest daily --breakdown   # per model
 
 Repository: [ryoppippi/ccusage](https://github.com/ryoppippi/ccusage).
 
-### claude-usage-analyzer, why did I spend it
+### ccwhy, why did I spend it
 
-Ranks your projects and names the controllable token sinks.
+Ranks your sessions and projects and names the controllable token sinks. The
+project is still called `claude-usage-analyzer` on GitHub; the command and the
+Homebrew formula are `ccwhy`.
 
 ```bash
 # macOS
-brew install SingggggYee/tap/claude-usage-analyzer
+brew install SingggggYee/tap/ccwhy
 
 # any platform with Rust
-cargo install claude-usage-analyzer
+cargo install ccwhy
 ```
 
 Prebuilt binaries are also published:
 
 ```bash
 # Linux x86_64
-curl -L https://github.com/SingggggYee/claude-usage-analyzer/releases/latest/download/claude-usage-analyzer-linux-x86_64.tar.gz | tar xz
+curl -L https://github.com/SingggggYee/claude-usage-analyzer/releases/latest/download/ccwhy-linux-x86_64.tar.gz | tar xz
 
 # macOS Apple Silicon
-curl -L https://github.com/SingggggYee/claude-usage-analyzer/releases/latest/download/claude-usage-analyzer-macos-aarch64.tar.gz | tar xz
+curl -L https://github.com/SingggggYee/claude-usage-analyzer/releases/latest/download/ccwhy-macos-aarch64.tar.gz | tar xz
 ```
 
 Then:
 
 ```bash
-claude-usage-analyzer                  # full report, last 30 days
-claude-usage-analyzer sessions         # top sessions by cost
+ccwhy                  # full report, last 30 days
+ccwhy sessions         # sessions sorted by cost
 ```
 
 Repository:

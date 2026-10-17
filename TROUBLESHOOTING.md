@@ -78,7 +78,7 @@ of `make verify`.
 That is correct and expected. The acceptance tests are red on a fresh clone;
 making them green is the task. See [TASKS.md](TASKS.md).
 
-## `claude-usage-analyzer` reports nothing
+## `ccwhy` reports nothing
 
 It reads `~/.claude/projects/`, so it only sees Claude Code sessions. Cursor and
 Copilot users should use their own dashboards. The exercises say where.
