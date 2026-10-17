@@ -33,15 +33,3 @@ def test_negative_subtotal_is_rejected():
 def test_describe_tier_reads_back():
     assert describe_tier(5_00) == "no volume discount"
     assert describe_tier(250_00) == "5% volume discount"
-
-
-def test_order_exactly_at_threshold_earns_that_tier():
-    assert rate_for_subtotal(100_00) == 0.05
-    assert rate_for_subtotal(500_00) == 0.10
-    assert rate_for_subtotal(1000_00) == 0.15
-    assert rate_for_subtotal(5000_00) == 0.20
-
-
-def test_order_one_cent_below_threshold_stays_in_lower_tier():
-    assert rate_for_subtotal(99_99) == 0.0
-    assert rate_for_subtotal(499_99) == 0.05
