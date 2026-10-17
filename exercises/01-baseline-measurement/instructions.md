@@ -88,11 +88,18 @@ there, and the agent needs `src/` inside its working directory.
    output into your prompt is part of your habits: do what you would normally
    do.
 
-2. **Start a fresh session for T1.** In your terminal, at the repository root:
+2. **Start a fresh session for T1, with an id you chose.** In your terminal,
+   at the repository root:
 
    ```bash
-   claude
+   id=$(uuidgen | tr 'A-Z' 'a-z')
+   claude --session-id "$id"
    ```
+
+   `ccusage` identifies sessions by id and nothing else, so picking the id
+   yourself is what lets step 5 find this session's row no matter what other
+   sessions are open. Keep using this terminal; `$id` has to still be there
+   after you exit. PowerShell: `$id = [guid]::NewGuid().ToString()`.
 
    Fresh means a new session: not `--resume`, and not `/clear` inside an old
    one. It must start empty so that its totals are T1 and nothing else.
@@ -128,33 +135,32 @@ there, and the agent needs `src/` inside its working directory.
    the agent to. The agent running them puts the output into the context you
    are measuring.
 
-5. **End the session and read the line.** In the agent, `/exit`. The report
-   identifies sessions by id, and the session you just left is the newest log
-   file in this repository's folder under `~/.claude/projects/`, so look the id
-   up and pull its row:
+5. **End the session and read the line.** In the agent, `/exit`. Back in the
+   same terminal, `$id` is the session you just left; pull its row:
 
    ```bash
-   id=$(basename "$(ls -t ~/.claude/projects/$(pwd | sed 's|[^A-Za-z0-9]|-|g')/*.jsonl | head -1)" .jsonl)
    COLUMNS=200 npx ccusage@latest session | grep -E "^│ Session|${id:0:8}"
    ```
 
-   That prints the header and your row:
+   That prints the header and your row. This one is a real T1 run on a
+   frontier model, five requests end to end; your numbers will differ, the
+   shape is what to recognize:
 
    ```
    │ Session      │ Agent  │ Models      │ Input │ Output │ Cache Create │ Cache Read │ Total Tokens │ Cost (USD) │
-   │ 295f5935-... │ Claude │ - fable-5-1 │ 1,672 │ 206,325│      780,305 │ 26,585,566 │   27,573,868 │     $28.83 │
+   │ f5ba87fa-... │ Claude │ - fable-5-1 │    66 │    643 │       20,760 │     87,543 │      109,012 │      $0.47 │
    ```
 
    Copy Input, Output, Cache Create, Cache Read and Cost into the
    `T1,bug,baseline` row as `input_tokens`, `output_tokens`, `cache_write`,
    `cache_read` and `cost_usd`. Add the model, `attempts` and `tests_pass`.
 
-   This assumes no other Claude Code session is open in this repository, since
-   a live one would own the newest file. `COLUMNS=200` stops the table from
-   wrapping the id across lines, which would defeat the `grep`.
+   `COLUMNS=200` stops the table from wrapping the id across lines, which
+   would defeat the `grep`.
 
 6. **Repeat for T2 in a new session.** Look at the starting line first,
-   `make task T=t2`, then `claude` again, same rules. The task:
+   `make task T=t2`, then a new id and `claude --session-id "$id"` again,
+   same rules. The task:
    add a `--format json` flag to the `report` command in `src/orderly/cli.py`,
    keeping text as the default. The summary dictionary is already built by
    `build_summary`. Verify with `make task T=t2` and `make test`, exit, and
