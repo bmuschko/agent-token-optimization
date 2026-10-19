@@ -83,8 +83,18 @@ what the run cost.
    becomes visible: a per-turn table of what each request resent, and a
    count of tool calls. On an exploration task, watch the cache reads grow
    with every turn and count the files the agent read to answer one
-   question. Read its totals as shape rather than data, for the reason in
-   step 3.
+   question.
+
+   **The two tools will not agree, and `ccusage` is the one that is right.**
+   Claude Code writes one log entry per content block of a response, so a
+   response made of a thinking block, a text block and a tool call is logged
+   three times, each copy carrying the response's full usage. `ccusage`
+   deduplicates by message id. `ccwhy` sums every entry, so its totals run
+   1.5 to 2.5 times high depending on how many blocks each response had, its
+   per-turn table lists entries rather than requests, with the duplicates
+   visibly identical, and it prices with its own flat rates on top. Use it
+   for the shape: which turns resent the most, how many files were read.
+   Every number on the worksheet comes from `ccusage`.
 
    Same habits as the baseline. This is still a measurement of how you work
    today, not of how well you can do when you try.
@@ -127,12 +137,9 @@ what the run cost.
    sink, "Cache creation (CLAUDE.md, MCP, system prompt)", mixes your rules
    file and tools with the vendor's prompt. `/context` is how you split that.
 
-   One caveat on its numbers. Claude Code logs one entry per content block
-   of a response, so a turn that returned text and a tool call is logged
-   twice, and `ccwhy` counts both; `ccusage` deduplicates by message id. A
-   five-request T1 session shows up in `ccwhy` with roughly double every
-   total and a different price on top. Use `ccwhy` to rank sessions and to
-   name sinks; worksheet numbers always come from `ccusage`.
+   Its totals are inflated for the reason given in step 1, so use it to rank
+   sessions against each other and to name sinks, not for figures. Worksheet
+   numbers always come from `ccusage`.
 
    Cursor and Copilot users: your product's usage dashboard, see
    [INSTALL.md](../../INSTALL.md#usage-analyzers).

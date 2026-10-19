@@ -37,7 +37,8 @@ distinction does not matter here.
 `ccwhy session` is the second look, and here it answers the question the
 exercise ends on: which change did the work. Its per-turn table shows the
 prefix shrinking, and its tool-call count shows how many files the agent read
-on its own.
+on its own. Its totals run high for the reason given in Exercise 2, so the
+drop is computed from the `ccusage` rows and `ccwhy` supplies the shape.
 
 Cursor and Copilot users: your usage dashboard, one session per run.
 

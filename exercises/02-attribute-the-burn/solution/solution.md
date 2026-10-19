@@ -1,28 +1,41 @@
 # Solution: Break Down Your Burn
 
-## The answer most people get
+## The answer depends on one thing: did the agent read, or search?
 
-**Exploration wins**, usually by a wide margin, and it surprises people because
-T7 produces no code at all.
+There are two rankings, and the "Tools Used" line of `ccwhy session` tells
+you which one you got.
 
-The reason is retrieval, not reasoning. Asked where rate limiting lives, an
-agent with no constraints reads its way across the repo until it finds
-something. On this project that is 60-plus source files. The same question,
-asked with a `Grep` first, costs a fraction of it.
+**If the agent read its way there, exploration wins**, usually by a wide
+margin, and it surprises people because T7 produces no code at all. Asked
+where rate limiting lives, an agent that browses opens file after file until
+it finds something. On this project that is a path through 60-plus source
+files, every one of them resent on every request that follows. The Tools Used
+line shows a long list of Reads.
 
-A typical attribution, in cost per completed task:
+**If the agent searched first, the refactor wins.** A `grep -l` for
+`rate.?limit` returns the file list in one call, one `cat` answers the
+question, and T7 lands near the bug fix. The Tools Used line shows a handful
+of Bash or Grep calls and a single file read. T4 then takes the top spot for
+the plain reason that it has to see three files to change three files.
+Claude Code's current default is to search first, so in a room running Claude
+Code this is the more common outcome. In a room running an agent that
+browses, the first one is.
 
-| Kind | Relative cost | Why |
-|---|---|---|
-| Bug fix (T1) | middling | cheap once located, expensive while searching |
-| Refactor (T4) | high | touches three files, needs to see all of them |
-| Feature (T5) | middling | bounded, two files plus a test |
-| Exploration (T7) | highest | reads widely to answer one question |
+The two rankings, in cost per completed task:
 
-If your own ranking differs, that is a finding worth saying out loud. The most
-common variation: people who already work in tightly scoped sessions see
-exploration drop to the middle, because their habits are already doing the
-work Section 3 is about to teach.
+| Kind | Agent read | Agent searched | Why |
+|---|---|---|---|
+| Bug fix (T1) | middling | lowest | cheap once located, expensive while searching |
+| Refactor (T4) | high | highest | touches three files, needs to see all of them |
+| Feature (T5) | middling | middling | bounded, two files plus a test |
+| Exploration (T7) | highest | middling | all retrieval, so its cost is set by how it retrieves |
+
+Either way the same thing is true and worth saying out loud: exploration
+spends more tokens than a one-line fix for zero lines of code, and the only
+variable is retrieval strategy. That is the lever Section 3 pulls, and an
+agent that searched first has already pulled it. If yours did, the finding
+is that the habit is cheap to adopt because the tool already has it. If
+yours browsed, the finding is the size of the tax.
 
 ## T7 reference answer
 
@@ -43,13 +56,15 @@ constructor argument exists.
 **The cheap way to find it.** One targeted search, then one file read:
 
 ```bash
-grep -rn "rate" src/orderly --include=*.py -l
+grep -rln "rate" src/orderly --include='*.py'
 ```
 
 That returns a handful of paths. Reading one of them answers the question. An
-agent told to "find where rate limiting is implemented" without that nudge will
-often read `config.py`, `errors.py`, the whole `api/` tree and several services
-before landing on the right file.
+agent that browses rather than searches will read `config.py`, `errors.py`,
+the whole `api/` tree and several services before landing on the right file.
+An agent that searches first does exactly what the command above does, in one
+tool call, without being told. `ccwhy session`'s Tools Used line shows which
+yours did.
 
 ## The controllable sink people name
 
