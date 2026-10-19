@@ -46,8 +46,8 @@ def charge(self, order_id: str, amount_cents: int, currency: str) -> dict:
     )
 ```
 
-A complete fixed file is in [payments.py](payments.py); shipping and inventory
-follow the same shape.
+Shipping and inventory follow the same shape, one `call_with_retry` per
+method, and the `import time` goes with the loops.
 
 The acceptance test is structural: it reads the source of all three modules
 and fails if any still contains a `for attempt in range(` loop or a direct
@@ -94,7 +94,12 @@ def _warm_one(self, key: str) -> None:
         self.load_count += 1
 ```
 
-A complete fixed file is in [warmer.py](warmer.py).
+with the two attributes it relies on added in `__init__`:
+
+```python
+self._lock = threading.Lock()
+self._claimed: Set[str] = set()
+```
 
 **Why cheap models fail this one.** The common wrong answer wraps the whole
 method in a lock, which is correct but serializes the warm and defeats the
