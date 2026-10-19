@@ -35,8 +35,6 @@ def _validate_text(record: Dict[str, Any], field: str, limit: int) -> None:
         raise ValidationError(field, f"must be {limit} characters or fewer")
 ```
 
-A complete fixed file is in [validator.py](validator.py).
-
 **The wrong fix** is to make the parser coerce `None` to `""`. It passes the
 acceptance tests and quietly destroys information: downstream code can no
 longer tell a partner who sent an empty note from one who sent none. If an

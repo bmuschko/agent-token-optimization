@@ -88,8 +88,11 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    ccwhy session "$id"
    ```
 
-   Record the row as `T3,bug,bloated`, with `attempts` and `tests_pass`, and
-   keep the `ccwhy` output. Then put the task back for the second run:
+   Copy the `ccusage` row into `T3,bug,bloated`. Add `attempts`, the number of
+   times you sent the agent back after a red test, and `tests_pass`, yes only
+   if both commands ended green. Neither comes from a tool. Keep the `ccwhy`
+   output for step 5; nothing from it goes on the worksheet. Then put the
+   task back for the second run:
 
    ```bash
    git checkout -- src/orderly/ingest
@@ -129,7 +132,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    > files should change.
 
    Verify, `/exit`, read the row the same way, and record it as
-   `T3,bug,scoped`.
+   `T3,bug,scoped` with its own `attempts` and `tests_pass`.
 
 5. **Compare.**
 
