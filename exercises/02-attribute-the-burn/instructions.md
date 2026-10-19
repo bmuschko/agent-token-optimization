@@ -85,16 +85,17 @@ what the run cost.
    with every turn and count the files the agent read to answer one
    question.
 
-   **The two tools will not agree, and `ccusage` is the one that is right.**
-   Claude Code writes one log entry per content block of a response, so a
-   response made of a thinking block, a text block and a tool call is logged
-   three times, each copy carrying the response's full usage. `ccusage`
-   deduplicates by message id. `ccwhy` sums every entry, so its totals run
-   1.5 to 2.5 times high depending on how many blocks each response had, its
-   per-turn table lists entries rather than requests, with the duplicates
-   visibly identical, and it prices with its own flat rates on top. Use it
-   for the shape: which turns resent the most, how many files were read.
-   Every number on the worksheet comes from `ccusage`.
+   > [!TIP]
+   > **The two tools will not agree, and `ccusage` is the one that is right.**
+   > Claude Code writes one log entry per content block of a response, so a
+   > response made of a thinking block, a text block and a tool call is logged
+   > three times, each copy carrying the response's full usage. `ccusage`
+   > deduplicates by message id. `ccwhy` sums every entry, so its totals run
+   > 1.5 to 2.5 times high depending on how many blocks each response had, its
+   > per-turn table lists entries rather than requests, with the duplicates
+   > visibly identical, and it prices with its own flat rates on top. Use it
+   > for the shape: which turns resent the most, how many files were read.
+   > Every number on the worksheet comes from `ccusage`.
 
    Same habits as the baseline. This is still a measurement of how you work
    today, not of how well you can do when you try.
