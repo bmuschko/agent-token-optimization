@@ -1,4 +1,4 @@
-"""T3 acceptance: omitted optional fields survive validation."""
+"""T6 acceptance: omitted optional fields survive validation."""
 from orderly.ingest.parser import parse_record
 from orderly.ingest.validator import validate
 

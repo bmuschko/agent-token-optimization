@@ -84,7 +84,7 @@ a request, is the check that works from anywhere. If the launch misbehaves,
 Your tax is zero and that is a legitimate result. Use the time on a side task
 instead: measure what `Read`ing `src/orderly/api/middleware/rate_limit.py`
 costs against `Grep`ping for `rate` across `src/orderly`, answering the same
-T7 question both ways.
+T5 question both ways.
 
 ## Done when
 

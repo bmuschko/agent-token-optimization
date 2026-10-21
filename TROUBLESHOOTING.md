@@ -80,13 +80,13 @@ making them green is the task. See [TASKS.md](TASKS.md).
 
 ## `ccwhy` reports nothing
 
-It reads `~/.claude/projects/`, so it only sees Claude Code sessions. Cursor and
-Copilot users should use their own dashboards. The exercises say where.
+It reads `~/.claude/projects/`, so it only sees Claude Code sessions. Every
+other agent has its own view in Exercise 2, step 3.
 
-## `npx ccusage` is slow the first time
+## `npx tokscale` is slow the first time
 
-It downloads the package before running. Run it once before the session so the
-cache is warm.
+It downloads its package and price table before running. Run it once before
+the session so the cache is warm.
 
 ## My costs went *up* after I optimized
 

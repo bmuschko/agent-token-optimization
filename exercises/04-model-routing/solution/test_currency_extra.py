@@ -1,4 +1,4 @@
-"""Reference solution for T6: the branches tests/test_currency.py misses."""
+"""Reference solution for T7: the branches tests/test_currency.py misses."""
 from decimal import Decimal
 
 import pytest

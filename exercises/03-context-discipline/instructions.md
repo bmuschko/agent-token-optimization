@@ -13,7 +13,7 @@ measures the drop, and proves the task still passes.
 
 ## Before you start
 
-Nothing new to install. The task is T3, which none of the earlier tasks
+Nothing new to install. The task is T6, which none of the earlier tasks
 touched, so the fixes from Exercises 1 and 2 can stay in the working tree.
 
 Two things to know before the first session:
@@ -47,7 +47,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
 1. **Look at the starting line, in a second terminal.**
 
    ```bash
-   make task T=t3        # expect: 2 failed, 1 passed
+   make task T=t6        # expect: 2 failed, 1 passed
    ```
 
    A record without `notes`, or with `notes` set to `None`, raises
@@ -79,7 +79,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    read the row:
 
    ```bash
-   make task T=t3
+   make task T=t6
    make test
    ```
 
@@ -88,15 +88,15 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    ccwhy session "$id"
    ```
 
-   Note the `ccusage` row as the bloated run. Add `attempts`, the number of
-   times you sent the agent back after a red test, and `tests_pass`, yes only
-   if both commands ended green. Neither comes from a tool. Keep the `ccwhy`
+   Note the `ccusage` row as the bloated run. Add your attempts, the number of
+   times you sent the agent back after a red test, and whether both commands
+   ended green. Neither comes from a tool. Keep the `ccwhy`
    output for step 5; nothing from it goes into the comparison. Then put the
    task back for the second run:
 
    ```bash
    git checkout -- src/orderly/ingest
-   make task T=t3        # red again
+   make task T=t6        # red again
    ```
 
 3. **Change three things between the sessions.**
@@ -132,7 +132,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    > files should change.
 
    Verify, `/exit`, read the row the same way, and note it as the scoped
-   run with its own `attempts` and `tests_pass`.
+   run with its own attempts and test result.
 
 5. **Compare.**
 
@@ -157,7 +157,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
 
 ## Done when
 
-- The bloated and scoped T3 runs noted, with a drop
+- The bloated and scoped T6 runs noted, with a drop
 - The scoped run's acceptance tests pass and `make test` is still green
 
 A token drop with a red suite is a failed exercise, and a useful one. Say so
@@ -172,9 +172,9 @@ probably scoped away something the task needed.
 
 - **You trimmed the rules file mid-session and the cost went up.** That is the
   prefix cache being invalidated. Edit the rules file *between* sessions.
-- **The scoped run changed only one file.** T3 spans parser and validator. An
+- **The scoped run changed only one file.** T6 spans parser and validator. An
   agent shown only the validator writes a defensive patch that hides the
-  problem. A fix that passes `make task T=t3` but leaves the parser alone is
+  problem. A fix that passes `make task T=t6` but leaves the parser alone is
   worth reading closely.
 - **You reset `src/orderly/ingest` and the tests are still green.** The agent
   fixed it somewhere else. `git status` shows where.

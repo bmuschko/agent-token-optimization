@@ -14,7 +14,7 @@ People routinely guess the rules file is the big one because it is the thing
 they can see. It is usually third. Say that out loud: the biggest lever is the
 one that is hardest to notice, because nobody prints their file context.
 
-## T3 reference fix
+## T6 reference fix
 
 The bug spans two files, which is why scoping to one of them fails.
 
@@ -67,6 +67,6 @@ already enforces, the history of the project, and the list of every directory.
 - **Editing `CLAUDE.md` mid-session.** It sits near the top of the prefix, so
   changing it invalidates the cache for everything after it. Finish the
   session first.
-- **Scoping to one file on a two-file bug.** T3 spans parser and validator. An
+- **Scoping to one file on a two-file bug.** T6 spans parser and validator. An
   agent given only the validator will write a defensive `try/except` that hides
   the problem rather than fixing it.

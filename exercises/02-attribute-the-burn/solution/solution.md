@@ -2,90 +2,50 @@
 
 ## The answer depends on one thing: did the agent read, or search?
 
-There are two rankings, and the "Tools Used" line of `ccwhy session` tells
-you which one you got.
+There are two rankings, and the tool calls of your T5 session tell you which one you got: the Tools Used line of `ccwhy session` on Claude Code, the tools line of `scripts/copilot_session.py` on Copilot CLI, the transcript on Cursor.
 
-**If the agent read its way there, exploration wins**, usually by a wide
-margin, and it surprises people because T7 produces no code at all. Asked
-where rate limiting lives, an agent that browses opens file after file until
-it finds something. On this project that is a path through 60-plus source
-files, every one of them resent on every request that follows. The Tools Used
-line shows a long list of Reads.
+**If the agent read its way there, exploration wins**, usually by a wide margin, although T5 produces no code at all. An agent that browses opens file after file until it finds rate limiting, a path through 60-plus source files, each one resent on every request that follows. The tool calls show a long list of file reads.
 
-**If the agent searched first, the refactor wins.** A `grep -l` for
-`rate.?limit` returns the file list in one call, one `cat` answers the
-question, and T7 lands near the bug fix. The Tools Used line shows a handful
-of Bash or Grep calls and a single file read. T4 then takes the top spot for
-the plain reason that it has to see three files to change three files.
-Claude Code's current default is to search first, so in a room running Claude
-Code this is the more common outcome. In a room running an agent that
-browses, the first one is.
+**If the agent searched first, the refactor wins.** One `grep` for `rate.?limit` returns the file, one read answers the question, and T5 lands near the bug fix. The tool calls show a few shell calls and a single read. T3 then takes the top spot because it has to see three files to change three files. Claude Code searches first by default, so in a Claude Code room this is the common outcome.
 
 The two rankings, in cost per completed task:
 
 | Kind | Agent read | Agent searched | Why |
 |---|---|---|---|
 | Bug fix (T1) | middling | lowest | cheap once located, expensive while searching |
-| Refactor (T4) | high | highest | touches three files, needs to see all of them |
-| Feature (T5) | middling | middling | bounded, two files plus a test |
-| Exploration (T7) | highest | middling | all retrieval, so its cost is set by how it retrieves |
+| Refactor (T3) | high | highest | touches three files, needs to see all of them |
+| Feature (T2, T4) | middling | middling | bounded, one or two files plus a test; if T2 cost far more, its agent fell for the exporters trap from Exercise 1 |
+| Exploration (T5) | highest | middling | all retrieval, so its cost is set by how it retrieves |
 
-Either way the same thing is true and worth saying out loud: exploration
-spends more tokens than a one-line fix for zero lines of code, and the only
-variable is retrieval strategy. That is the lever Section 3 pulls, and an
-agent that searched first has already pulled it. If yours did, the finding
-is that the habit is cheap to adopt because the tool already has it. If
-yours browsed, the finding is the size of the tax.
+Either way, exploration spends more tokens than a one-line fix for zero lines of code, and the only variable is retrieval strategy. That is the lever Section 3 pulls. If your agent searched first, the finding is that the habit is cheap because the tool already has it. If it browsed, the finding is the size of the tax.
 
-## T7 reference answer
+## T5 reference answer
 
-Rate limiting lives in `src/orderly/api/middleware/rate_limit.py`. The limit is
-the module-level constant:
+Rate limiting lives in `src/orderly/api/middleware/rate_limit.py`. The limit is a module-level constant:
 
 ```python
 WINDOW_REQUEST_LIMIT = 120
 WINDOW_SECONDS = 60
 ```
 
-`RateLimiter` takes both as constructor arguments defaulting to those
-constants, so there are two ways to change it: edit the constant to change it
-everywhere, or pass `limit=` when constructing the limiter to change it for one
-caller. A complete answer names the file, the constant, and the fact that the
-constructor argument exists.
+`RateLimiter` takes both as constructor arguments defaulting to those constants, so there are two ways to change it: edit the constant for everywhere, or pass `limit=` for one caller. A complete answer names the file, the constant and the constructor argument.
 
-**The cheap way to find it.** One targeted search, then one file read:
+**The cheap way to find it.** One search, then one read:
 
 ```bash
 grep -rln "rate" src/orderly --include='*.py'
 ```
 
-That returns a handful of paths. Reading one of them answers the question. An
-agent that browses rather than searches will read `config.py`, `errors.py`,
-the whole `api/` tree and several services before landing on the right file.
-An agent that searches first does exactly what the command above does, in one
-tool call, without being told. `ccwhy session`'s Tools Used line shows which
-yours did.
+An agent that browses instead reads `config.py`, `errors.py`, the whole `api/` tree and several services before landing on the right file. An agent that searches first does exactly this, in one tool call, without being told.
 
 ## The controllable sink people name
 
-In most cohorts the top answer is **MCP tool definitions**, followed by **the
-rules file**. Both are fixed overhead: you pay them on every request in the
-session whether or not they contribute anything to the task at hand. Tool
-definitions are Section 5. The rules file is Section 3.
+In most cohorts the top answer is **MCP tool definitions**, then **the rules file**. Both are fixed overhead paid on every request whether or not they help the task. Tool definitions are Section 5, the rules file Section 3.
 
-`ccwhy` lists them under "Controllable Token Sinks", though as one line,
-"Cache creation (CLAUDE.md, MCP, system prompt)". It tells you the fixed
-prefix is the sink without separating your rules file and tools from the
-vendor's prompt. `/context` makes that split, which is why the two are run
-together: one says how much and why, the other says made of what.
+`ccwhy` lists them as one line, "Cache creation (CLAUDE.md, MCP, system prompt)", which names the fixed prefix as the sink without separating your rules file and tools from the vendor's prompt. `/context` makes that split, which is why the two views are run together: one says how much, the other says made of what.
 
 ## Common wrong turns
 
-- **Ranking kinds by `cost_usd` without looking at `tests_pass`.** A cheap run
-  for a task that never passed is not a cheap kind. It is spend with nothing
-  completed, and it ranks first, not last.
-- **Treating the vendor system prompt as a sink.** It is overhead, but it is
-  not yours to cut. Ignore it.
-- **Measuring T7 by output tokens.** Exploration produces almost no output. All
-  of its cost is on the input side, which is exactly why it is invisible to
-  people who watch the wrong number.
+- **Ranking kinds by cost without looking at whether the tests passed.** A cheap run for a task that never passed is spend with nothing completed. It ranks first, not last.
+- **Treating the vendor system prompt as a sink.** It is overhead, but not yours to cut.
+- **Measuring T5 by output tokens.** Exploration produces almost no output. All of its cost is on the input side, which is why it is invisible to people who watch the wrong number.

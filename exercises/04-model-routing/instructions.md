@@ -12,7 +12,7 @@ measuring which wins for you.
 
 ### Run A, the control
 
-Work **T1 through T6** entirely on your **frontier** model. Record total cost
+Work **T1, T2, T3, T4, T6 and T7**, every task with an acceptance test except T8, entirely on your **frontier** model. Record total cost
 and pass rate.
 
 ### Run B, the routed version
@@ -54,18 +54,18 @@ Post your two cost-per-completed-task numbers in chat, **even if B lost**.
 |---|---|---|
 | T1 | bug, one file | `make task T=t1` |
 | T2 | feature, one file | `make task T=t2` |
-| T3 | bug, two files | `make task T=t3` |
-| T4 | refactor, three files | `make task T=t4` |
-| T5 | feature, two files | `make task T=t5` |
-| T6 | test coverage | `make coverage` |
+| T3 | refactor, three files | `make task T=t3` |
+| T4 | feature, two files | `make task T=t4` |
+| T6 | bug, two files | `make task T=t6` |
+| T7 | test coverage | `make coverage` |
 
-T6 is done when `src/orderly/pricing/currency.py` reaches 95% line coverage. It
+T7 is done when `src/orderly/pricing/currency.py` reaches 95% line coverage. It
 starts at 52%.
 
 ## What "cheapest capable" means
 
 Not the cheapest model on the menu. The cheapest model that passes T1, T2 and
-T6 on the first attempt. Find that model and pin it.
+T7 on the first attempt. Find that model and pin it.
 
 ## Done when
 
@@ -77,7 +77,7 @@ Monday, and for which kinds of task?
 **Run B takes longer in wall-clock time even when it costs less.** That latency
 is a real cost. Write it down next to the money.
 
-If you are running short, cut the task list to T1, T2, T5 and T6. Never cut the
+If you are running short, cut the task list to T1, T2, T4 and T7. Never cut the
 control run; without it you have nothing to compare against.
 
 ## If you get stuck

@@ -3,11 +3,11 @@
 ## What usually happens
 
 Run B wins on cost for most people, by somewhere between 40% and 70%, with the
-same pass rate. The escalations cluster on exactly two tasks: **T4**, because
+same pass rate. The escalations cluster on exactly two tasks: **T3**, because
 the refactor spans three files and has a structural acceptance test, and
 **T8** if you add it, because a concurrency bug is genuinely hard.
 
-T1, T2, T5 and T6 almost never need a frontier model. T1 is one character. T6
+T1, T2, T4 and T7 almost never need a frontier model. T1 is one character. T7
 is writing tests against a module whose branches are already visible.
 
 ## When Run B loses
@@ -26,7 +26,7 @@ not universal, and the condition is worth more to the room than the result.
 
 ## Reference fixes
 
-### T4, extract the retry logic
+### T3, extract the retry logic
 
 `utils/retry.py` already has `call_with_retry`. The three clients should use
 it rather than each hand-rolling the same loop:
@@ -59,7 +59,7 @@ write a new helper rather than find the existing one, leaving two retry
 implementations. The acceptance test catches the loops but not the
 duplication, so read the diff.
 
-### T6, cover `currency.py`
+### T7, cover `currency.py`
 
 The uncovered branches are the ones nobody thinks about: zero-decimal
 currencies, three-decimal currencies, the unsupported-currency error,
@@ -112,10 +112,10 @@ the point: your test suite is a floor, not a proof.
 |---|---|
 | T1 bug, one character | cheapest |
 | T2 feature, one file | cheapest |
-| T6 test coverage | cheapest |
-| T3 bug, two files | mid |
-| T5 feature, two files | mid |
-| T4 refactor, three files | mid, escalating on failure |
+| T7 test coverage | cheapest |
+| T4 feature, two files | mid |
+| T6 bug, two files | mid |
+| T3 refactor, three files | mid, escalating on failure |
 | T8 concurrency | frontier |
 
 ## Common wrong turns

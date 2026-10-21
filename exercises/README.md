@@ -42,23 +42,23 @@ read the number.
 | Question | Tool | Exercises |
 |---|---|---|
 | How many input tokens did the agent send? | `headroom savings` | 5, 6 |
-| What did it cost, and how much was output? | `npx ccusage@latest session` | 1, 2, 3, 4 |
-| Which sessions and habits ate the budget? | `ccwhy` | 2 |
+| What did it cost, and how much was output? | `npx tokscale@latest` | 1, 2, 3, 4 |
+| What made one session expensive? | `ccwhy` on Claude Code, the per-agent views in Exercise 2 | 2 |
 | What is in the window right now? | `/context` | 2, 5 |
 
-The rule underneath: **every number you record comes from `ccusage`; the proxy
-is for per-turn views and for agents whose logs `ccusage` cannot read.**
+The rule underneath: **every number you record comes from `tokscale`; the
+proxy is for per-turn views.**
 
 `headroom savings` counts every input token the proxy forwarded, per request,
 with the cached history that is resent every turn included, and it does so
 for any agent. That makes it the instrument for the per-turn question in
-Exercise 6 and for agents `ccusage` cannot read in Exercise 5. It reports
+Exercise 6 and in Exercise 5. It reports
 savings rather than spend: in passthrough mode the line reads
 `saved 0 / N tokens`, and `N` is your number. The ledger behind it is
 cumulative and global, so run `headroom savings --reset` before every measured
 run.
 
-`ccusage` prices a whole Claude Code session, output tokens and cache read and
-write included, none of which the proxy reports. One session per run keeps it
-isolated. Cursor and Copilot users substitute their own usage dashboard.
+`tokscale` prices a whole session, output tokens and cache read and write
+included, none of which the proxy reports, and it does so for every agent.
+One session per run keeps it isolated.
 

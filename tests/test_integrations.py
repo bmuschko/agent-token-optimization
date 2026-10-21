@@ -1,6 +1,6 @@
 """Retry behaviour across the integration clients.
 
-This is the safety net for the T4 refactor: the behaviour below must not
+This is the safety net for the T3 refactor: the behaviour below must not
 change, however the retry logic is organized.
 """
 import pytest

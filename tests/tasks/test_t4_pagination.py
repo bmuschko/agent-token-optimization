@@ -1,4 +1,4 @@
-"""T5 acceptance: list_orders paginates."""
+"""T4 acceptance: list_orders paginates."""
 from orderly.api.orders import OrdersHandler
 
 

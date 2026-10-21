@@ -58,7 +58,7 @@ Say this part out loud, because the numbers above oversell it for some setups:
 For anyone with no MCP servers: reading
 `src/orderly/api/middleware/rate_limit.py` costs roughly 700 to 900 tokens.
 Grepping for `rate` across `src/orderly` and reading only the matching lines
-costs well under 200, and answers the T7 question just as completely.
+costs well under 200, and answers the T5 question just as completely.
 
 That ratio is the whole of Section 3 in miniature, and it holds whether or not
 you have a single MCP server connected.

@@ -16,15 +16,15 @@ Later exercises shrink one factor or the other. You will measure two tasks and n
 
 | Figure | What it is |
 |---|---|
-| `input_tokens` | everything the agent sent, summed over all requests |
-| `output_tokens` | everything the model wrote back |
-| `cache_read` | the part of the input served from the prompt cache, at a tenth of the price |
-| `cache_write` | the part written into the cache, at 1.25 times the price |
-| `cost_usd` | the four above, priced |
-| `attempts` | how many times you sent the agent back after a red test |
-| `tests_pass` | whether both test commands ended green |
+| Input | everything the agent sent, summed over all requests |
+| Output | everything the model wrote back |
+| Cache read | the part of the input served from the prompt cache, at a tenth of the price |
+| Cache write | the part written into the cache, at 1.25 times the price |
+| Cost | the four above, priced, in US dollars |
+| Attempts | how many times you sent the agent back after a red test, counted by hand |
+| Tests pass | whether both test commands ended green, noted by hand |
 
-`cost_usd` covers every attempt, the failed ones included. Input will dwarf output by an order of magnitude. That is normal, and input is the lever the rest of the course pulls.
+Cost covers every attempt, the failed ones included. Input will dwarf output by an order of magnitude. That is normal, and input is the lever the rest of the course pulls.
 
 ## The tool
 
@@ -90,7 +90,7 @@ Run every command from the repository root: the tests need the Makefile there, t
    make test             # regression suite, must stay green
    ```
 
-   Both green: T1 is done. Either red: tell the agent what failed and add one to `attempts`.
+   Both green: T1 is done. Either red: tell the agent what failed and add one to your attempts.
 
 5. **End the session and read the row.** `/exit` in Claude Code, Codex CLI and Copilot CLI, `/quit` in Gemini CLI. Then, in the same terminal, pull the row.
 
@@ -105,10 +105,10 @@ Run every command from the repository root: the tests need the Makefile there, t
 
    ```
    session=f5ba87fa-2c1e-4f0b-9a7d-3e8c5b6d1a20 client=claude model=claude-fable-5-1
-   input_tokens=66 output_tokens=643 cache_read=87543 cache_write=20760 cost_usd=0.47
+   Input 66 · Output 643 · Cache read 87,543 · Cache write 20,760 · Cost $0.47
    ```
 
-   Note the five numbers as your T1 baseline, with the model, `attempts` and `tests_pass`.
+   Note the five numbers as your T1 baseline, with the model, your attempts and whether the tests passed.
 
    **Codex CLI, Copilot CLI, Gemini CLI.** Run the snapshot command from step 2 again. The row that was not there before is your session.
 

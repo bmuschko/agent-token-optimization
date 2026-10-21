@@ -1,4 +1,4 @@
-"""T4 acceptance: the retry loop exists in one place, not three.
+"""T3 acceptance: the retry loop exists in one place, not three.
 
 Behaviour is covered by tests/test_integrations.py. This file only checks
 that the duplication is gone.

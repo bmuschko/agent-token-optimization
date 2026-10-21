@@ -30,9 +30,9 @@ def print_row(session_id, row):
     """Print one session as labelled figures, cost rounded to cents."""
     print(f"session={session_id} client={row['client']} model={'+'.join(row['models'])}")
     print(
-        f"input_tokens={row['input_tokens']} output_tokens={row['output_tokens']} "
-        f"cache_read={row['cache_read']} cache_write={row['cache_write']} "
-        f"cost_usd={row['cost_usd']:.2f}"
+        f"Input {row['input_tokens']:,} · Output {row['output_tokens']:,} · "
+        f"Cache read {row['cache_read']:,} · Cache write {row['cache_write']:,} · "
+        f"Cost ${row['cost_usd']:.2f}"
     )
 
 

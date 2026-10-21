@@ -38,7 +38,7 @@ npx tokscale@latest --json --no-spinner --today --group-by client,session,model 
 tokscale prices every client from the same table, so a Codex row and a Claude Code row for T1 differ in what the agent sent, not in how the tokens were priced. Three cautions before you conclude anything from that:
 
 - **The model dominates.** Two agents on the same frontier model land close together; the same agent on a frontier model and a small one do not. Section 4 separates the agent from the model.
-- **Zero cache columns are a logging gap, not free caching.** An agent showing `cache_read=0 cache_write=0` is not logging those figures, and `input_tokens` carries the whole prompt. Compare the cost column instead of the split.
+- **Zero cache columns are a logging gap, not free caching.** An agent showing zero cache read and zero cache write is not logging those figures, and the input figure carries the whole prompt. Compare the cost column instead of the split.
 - **Cursor rows are a difference of totals**, so anything else that used the account between the two snapshots is in the row.
 
 To learn what T1 costs on another agent, run it there in a fresh session and read the row the same way. The method in [instructions.md](../instructions.md) does not change, only the launch command.
