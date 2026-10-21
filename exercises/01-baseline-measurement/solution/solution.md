@@ -28,6 +28,44 @@ Two things to look for before the next exercise:
 - **Input tokens an order of magnitude above output.** Normal and expected.
   Input is where the volume lives; that is the lever Section 3 pulls.
 
+The commands, for reference. The row for a session you named yourself:
+
+```bash
+npx tokscale@latest --json --no-spinner --today --group-by client,session,model \
+  | uv run python scripts/session_row.py "$id"
+```
+
+Every session from today, one block each, when you did not name it:
+
+```bash
+npx tokscale@latest --json --no-spinner --today --group-by client,session,model \
+  | uv run python scripts/session_row.py
+```
+
+## Comparing agents
+
+The rows in the room were produced by different agents, and they can be read
+against each other. tokscale prices every client from the same price table,
+so a Codex row and a Claude Code row for T1 differ in what the agent sent,
+not in how the tokens were priced.
+
+Three cautions before you draw a conclusion from that comparison:
+
+- **The model dominates.** Two agents on the same frontier model land close
+  together; the same agent on a frontier model and a small one do not.
+  Section 4 separates the agent from the model.
+- **Zero cache columns are a logging gap, not free caching.** If an agent
+  shows `cache_read=0 cache_write=0`, it is not writing those figures to its
+  session log and `input_tokens` carries the whole prompt. Compare the cost
+  column, which is priced on what was logged, rather than the split.
+- **Cursor rows are a difference of totals**, so anything else that used the
+  account between the two snapshots is in the row.
+
+If you want to know what T1 would cost on another agent, run it there in a
+fresh session and read the row the same way. The method in
+[instructions.md](../instructions.md) does not change; only the launch
+command does.
+
 ## T1, what the fix is
 
 The tier table is inclusive of its thresholds, so the comparison has to be

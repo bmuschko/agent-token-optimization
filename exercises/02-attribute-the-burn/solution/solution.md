@@ -81,7 +81,7 @@ together: one says how much and why, the other says made of what.
 
 ## Common wrong turns
 
-- **Ranking kinds by `cost_usd` without looking at `tests_pass`.** A cheap row
+- **Ranking kinds by `cost_usd` without looking at `tests_pass`.** A cheap run
   for a task that never passed is not a cheap kind. It is spend with nothing
   completed, and it ranks first, not last.
 - **Treating the vendor system prompt as a sink.** It is overhead, but it is

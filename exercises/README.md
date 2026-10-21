@@ -46,7 +46,7 @@ read the number.
 | Which sessions and habits ate the budget? | `ccwhy` | 2 |
 | What is in the window right now? | `/context` | 2, 5 |
 
-The rule underneath: **every worksheet number comes from `ccusage`; the proxy
+The rule underneath: **every number you record comes from `ccusage`; the proxy
 is for per-turn views and for agents whose logs `ccusage` cannot read.**
 
 `headroom savings` counts every input token the proxy forwarded, per request,

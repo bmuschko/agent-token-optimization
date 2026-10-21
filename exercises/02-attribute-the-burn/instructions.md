@@ -12,11 +12,11 @@ task, and which single controllable thing is your biggest sink.
 
 Nothing new to install, and nothing to reset. The T1 and T2 fixes from
 Exercise 1 can stay in the working tree; the tasks below do not touch the
-same files. Their rows are already on the worksheet, and this exercise reuses
-T1 as its bug fix.
+same files. You already have their numbers from Exercise 1, and this exercise
+reuses T1 as its bug fix.
 
 One habit to adopt from here on: after every agent run, look at `git status`
-before you record the row. Agents touch more than the file the task names,
+before you note the numbers. Agents touch more than the file the task names,
 sometimes helpfully and sometimes not, and whatever they touched is part of
 what the run cost.
 
@@ -95,22 +95,21 @@ what the run cost.
    > per-turn table lists entries rather than requests, with the duplicates
    > visibly identical, and it prices with its own flat rates on top. Use it
    > for the shape: which turns resent the most, how many files were read.
-   > Every number on the worksheet comes from `ccusage`.
+   > Every number you record comes from `ccusage`.
 
    Same habits as the baseline. This is still a measurement of how you work
    today, not of how well you can do when you try.
 
-2. **Record `cost_usd`, `attempts` and `tests_pass`** into the `T4`, `T5` and
-   `T7` baseline rows. The token columns can stay empty on these rows; the
-   two questions below are answered in money and in what the window is made
-   of, not in tokens per task. For T7, `tests_pass` means the answer was
-   complete.
+2. **Note `cost_usd`, `attempts` and `tests_pass`** for T4, T5 and T7. The
+   token figures are not needed for these three; the two questions below are
+   answered in money and in what the window is made of, not in tokens per
+   task. For T7, `tests_pass` means the answer was complete.
 
-   Then fill `cost_per_completed_task` for all four kinds, T1 included. With
-   one task per kind the arithmetic is short. A task that passed costs its
-   row's `cost_usd`, failed attempts included. A task that never passed has
-   no completion to divide by, which makes it the most expensive kind by
-   definition.
+   Then work out the cost per completed task for all four kinds, T1
+   included. With one task per kind the arithmetic is short. A task that
+   passed costs its `cost_usd`, failed attempts included. A task that never
+   passed has no completion to divide by, which makes it the most expensive
+   kind by definition.
 
 3. **Find the controllable sink.** Two instruments, one question each.
 
@@ -139,8 +138,8 @@ what the run cost.
    file and tools with the vendor's prompt. `/context` is how you split that.
 
    Its totals are inflated for the reason given in step 1, so use it to rank
-   sessions against each other and to name sinks, not for figures. Worksheet
-   numbers always come from `ccusage`.
+   sessions against each other and to name sinks, not for figures. The
+   numbers you record always come from `ccusage`.
 
    Cursor and Copilot users: your product's usage dashboard, see
    [INSTALL.md](../../INSTALL.md#usage-analyzers).

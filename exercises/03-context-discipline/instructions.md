@@ -88,10 +88,10 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    ccwhy session "$id"
    ```
 
-   Copy the `ccusage` row into `T3,bug,bloated`. Add `attempts`, the number of
+   Note the `ccusage` row as the bloated run. Add `attempts`, the number of
    times you sent the agent back after a red test, and `tests_pass`, yes only
    if both commands ended green. Neither comes from a tool. Keep the `ccwhy`
-   output for step 5; nothing from it goes on the worksheet. Then put the
+   output for step 5; nothing from it goes into the comparison. Then put the
    task back for the second run:
 
    ```bash
@@ -131,8 +131,8 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    > validates, while over-long notes are still rejected. Only those two
    > files should change.
 
-   Verify, `/exit`, read the row the same way, and record it as
-   `T3,bug,scoped` with its own `attempts` and `tests_pass`.
+   Verify, `/exit`, read the row the same way, and note it as the scoped
+   run with its own `attempts` and `tests_pass`.
 
 5. **Compare.**
 
@@ -148,7 +148,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
 6. **If time permits, scope T1 as well.** You have its baseline from Exercise
    1. Put the bug back with `git checkout -- src/orderly/pricing/discount.py`,
    run it once more in a fresh session with the trimmed rules file and a
-   prompt that names the file, and record `T1,bug,scoped`. One-character
+   prompt that names the file, and note it next to the baseline. One-character
    fixes are where scoping gains the least in absolute terms and the most as
    a percentage, which is worth seeing once.
 
@@ -157,7 +157,7 @@ Cursor and Copilot users: your usage dashboard, one session per run.
 
 ## Done when
 
-- `T3,bug,bloated` and `T3,bug,scoped` recorded, with a drop
+- The bloated and scoped T3 runs noted, with a drop
 - The scoped run's acceptance tests pass and `make test` is still green
 
 A token drop with a red suite is a failed exercise, and a useful one. Say so

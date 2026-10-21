@@ -26,7 +26,6 @@ an SSL-inspecting proxy is blocking a download.
 | [`tests/tasks/`](tests/tasks) | Acceptance tests for the seeded tasks. Red until you do the work. |
 | [`exercises/`](exercises) | Six exercises, each with `instructions.md` and a `solution/`. |
 | [`TASKS.md`](TASKS.md) | The eight tasks T1 to T8 you work with your agent. |
-| [`worksheet.csv`](worksheet.csv) | Where you record token counts during the session. |
 | [`decision-tree.md`](decision-tree.md) | The one-page handout from the end of the course. |
 
 ## The two commands
