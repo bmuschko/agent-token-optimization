@@ -22,29 +22,45 @@ jobs:
       - name: Regression suite stays green
         run: make test
 
+      - name: Define the expected-outcome check for the steps below
+        run: |
+          cat > "$RUNNER_TEMP/expect_outcome.sh" <<'EOF'
+          expect_outcome() {
+            local want="$1" summary
+            shift
+            summary="$(make "$@" 2>&1 | grep -E '^=+ .*(passed|failed).* =+$' | tail -1)"
+            echo "make $*: ${summary:-no pytest summary}"
+            if ! grep -q "$want" <<<"$summary"; then
+              echo "::error::expected '$want' from 'make $*'"
+              return 1
+            fi
+          }
+          EOF
+          echo "BASH_ENV=$RUNNER_TEMP/expect_outcome.sh" >> "$GITHUB_ENV"
+
       - name: Task T1 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "3 failed, 1 passed" task T=t1
+        run: expect_outcome "3 failed, 1 passed" task T=t1
 
       - name: Task T2 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t2
+        run: expect_outcome "2 failed, 1 passed" task T=t2
 
       - name: Task T3 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t3
+        run: expect_outcome "2 failed, 1 passed" task T=t3
 
       - name: Task T4 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "3 failed, 2 passed" task T=t4
+        run: expect_outcome "3 failed, 2 passed" task T=t4
 
       - name: Task T6 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t6
+        run: expect_outcome "2 failed, 1 passed" task T=t6
 
       - name: Task T8 is expected to fail
         if: ${{ !cancelled() }}
-        run: scripts/expect_outcome.sh "failed" task T=t8
+        run: expect_outcome "failed" task T=t8
 
       - name: Coverage of currency.py stops at 52 percent
         if: ${{ !cancelled() }}
