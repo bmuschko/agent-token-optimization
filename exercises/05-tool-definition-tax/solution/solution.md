@@ -61,7 +61,7 @@ Take the generous half seriously, though, because cynicism is not the lesson. A 
 ## Questions this raises
 
 - **Is the compression lossy?** Originals are stored locally and the model can retrieve the full text when it needs it. The honest answer to whether that is safe enough for your repo is your own test suite, not the architecture.
-- **Why not just use compression and skip the rest?** Because it addresses one row of the decision tree, the outputs you do not control. Context discipline and model routing are bigger, cheaper, and free.
+- **Why not just use compression and skip the rest?** Because it addresses only the outputs you do not control. Context discipline and model routing are bigger, cheaper, and free.
 - **Does it work with Cursor or Copilot?** `headroom wrap cursor` prints a config to paste. `headroom wrap copilot` starts the proxy and launches.
 
 ## Common wrong turns

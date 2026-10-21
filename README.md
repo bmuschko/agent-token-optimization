@@ -21,7 +21,6 @@ Please do step 1 at least a day ahead, especially on a corporate network. The fi
 | [`tests/tasks/`](tests/tasks) | Acceptance tests for the seeded tasks. Red until you do the work. |
 | [`exercises/`](exercises) | Six exercises, each with `instructions.md` and a `solution/`. |
 | [`TASKS.md`](TASKS.md) | The eight tasks T1 to T8 you work with your agent. |
-| [`decision-tree.md`](decision-tree.md) | The one-page handout from the end of the course. |
 
 ## The two commands
 
