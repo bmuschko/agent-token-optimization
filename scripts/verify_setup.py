@@ -73,7 +73,7 @@ def check_pytest():
         ok(f"regression suite green ({summary})")
     else:
         fail("regression suite is not green",
-             "see TROUBLESHOOTING.md, 'make test fails on a fresh clone'")
+             "run 'make test' and fix the failing test before the session")
 
 
 def check_tasks_are_red():
@@ -120,7 +120,7 @@ def main():
     print()
     if required_failures:
         print(f"{RED}{required_failures} required check(s) failed.{RESET} "
-              "See TROUBLESHOOTING.md.\n")
+              "Each line above names its fix.\n")
         return 1
     print(f"{GREEN}Required checks passed.{RESET} "
           "Run 'headroom doctor' to confirm proxy routing.\n")

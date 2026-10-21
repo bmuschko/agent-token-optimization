@@ -227,6 +227,5 @@ Both should be green before the session starts.
 
 ## If something goes wrong
 
-See [TROUBLESHOOTING.md](TROUBLESHOOTING.md). The most common problem by a wide
-margin is an SSL-inspecting corporate proxy blocking a download, which is why
+The most common problem by a wide margin is an SSL-inspecting corporate proxy blocking a download, which is why
 this page asks you to install a day ahead.

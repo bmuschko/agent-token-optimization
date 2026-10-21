@@ -28,8 +28,7 @@ headroom wrap claude --no-proxy --project-settings  # or: codex | copilot | curs
 
 `doctor`'s `claude` row turns green only when run from the directory you
 launched `wrap` in. The `savings` row, which names how long ago the proxy saw
-a request, is the check that works from anywhere. If the launch misbehaves,
-[TROUBLESHOOTING.md](../../TROUBLESHOOTING.md) covers the usual causes.
+a request, is the check that works from anywhere.
 
 ## Steps
 
