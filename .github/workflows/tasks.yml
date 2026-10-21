@@ -22,27 +22,27 @@ jobs:
       - name: Regression suite stays green
         run: make test
 
-      - name: T1 fails 3 of 4
+      - name: Task T1 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "3 failed, 1 passed" task T=t1
 
-      - name: T2 fails 2 of 3
+      - name: Task T2 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t2
 
-      - name: T3 fails 2 of 3
+      - name: Task T3 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t3
 
-      - name: T4 fails 3 of 5
+      - name: Task T4 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "3 failed, 2 passed" task T=t4
 
-      - name: T6 fails 2 of 3
+      - name: Task T6 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "2 failed, 1 passed" task T=t6
 
-      - name: T8 fails
+      - name: Task T8 is expected to fail
         if: ${{ !cancelled() }}
         run: scripts/expect_outcome.sh "failed" task T=t8
 
