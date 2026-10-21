@@ -26,14 +26,15 @@ jobs:
         run: |
           cat > "$RUNNER_TEMP/expect_outcome.sh" <<'EOF'
           expect_outcome() {
-            local want="$1" summary
+            local want="$1" log="$RUNNER_TEMP/make.log" summary
             shift
-            summary="$(make "$@" 2>&1 | grep -E '^=+ .*(passed|failed).* =+$' | tail -1)"
-            echo "make $*: ${summary:-no pytest summary}"
+            make "$@" 2>&1 | tee "$log" || true
+            summary="$(grep -E '^=+ .*(passed|failed).* =+$' "$log" | tail -1)"
             if ! grep -q "$want" <<<"$summary"; then
-              echo "::error::expected '$want' from 'make $*'"
+              echo "::error::expected '$want' from 'make $*', got '${summary:-no pytest summary}'"
               return 1
             fi
+            echo "make $* ended as expected: $want"
           }
           EOF
           echo "BASH_ENV=$RUNNER_TEMP/expect_outcome.sh" >> "$GITHUB_ENV"
