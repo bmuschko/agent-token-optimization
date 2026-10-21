@@ -1,33 +1,16 @@
 # Orderly
 
-Welcome to the Orderly codebase. This file gives an AI assistant the full
-context it needs to work effectively in this repository. Please read it
-carefully before making any changes.
+Welcome to the Orderly codebase. This file gives an AI assistant the full context it needs to work effectively in this repository. Please read it carefully before making any changes.
 
 ## Project history
 
-Orderly began life in 2019 as an internal script for reconciling partner order
-feeds, written originally in Perl and ported to Python in 2021 during the
-platform consolidation effort. The port was led by the Commerce Platform team,
-with review from Architecture. A second refactor in 2023 introduced the service
-layer and the repository pattern, replacing the direct database access that the
-original port had carried over. The current structure dates from that refactor,
-although several modules still reflect the earlier design and are scheduled for
-cleanup in a future quarter. The ingest layer in particular predates the service
-layer and does not follow the same conventions.
+Orderly began life in 2019 as an internal script for reconciling partner order feeds, written originally in Perl and ported to Python in 2021 during the platform consolidation effort. The port was led by the Commerce Platform team, with review from Architecture. A second refactor in 2023 introduced the service layer and the repository pattern, replacing the direct database access that the original port had carried over. The current structure dates from that refactor, although several modules still reflect the earlier design and are scheduled for cleanup in a future quarter. The ingest layer in particular predates the service layer and does not follow the same conventions.
 
 ## Architecture
 
-Orderly follows a layered architecture. Requests arrive at the API layer, which
-delegates to the service layer, which in turn uses repositories for persistence
-and integrations for outbound calls. Models are plain Python objects with
-`to_dict` and `from_dict`. Pricing is a separate concern and is not routed
-through services, for historical reasons described above.
+Orderly follows a layered architecture. Requests arrive at the API layer, which delegates to the service layer, which in turn uses repositories for persistence and integrations for outbound calls. Models are plain Python objects with `to_dict` and `from_dict`. Pricing is a separate concern and is not routed through services, for historical reasons described above.
 
-The layering is intended to keep business rules out of the handlers and
-persistence details out of the services. In practice there are a few places
-where this is not strictly observed, and those are considered technical debt
-rather than examples to follow.
+The layering is intended to keep business rules out of the handlers and persistence details out of the services. In practice there are a few places where this is not strictly observed, and those are considered technical debt rather than examples to follow.
 
 ## Directory layout
 
@@ -51,8 +34,7 @@ rather than examples to follow.
 - `make task T=t1` runs the acceptance tests for one task.
 - `make coverage` checks coverage of the currency module.
 - `make verify` checks the local setup.
-- Python runs through `uv run`. There is no activated virtual environment, so
-  use `uv run pytest ...` rather than `python3 -m pytest`.
+- Python runs through `uv run`. There is no activated virtual environment, so use `uv run pytest ...` rather than `python3 -m pytest`.
 
 ## Code style
 
@@ -91,17 +73,12 @@ rather than examples to follow.
 
 ## Review expectations
 
-Changes should be small and focused. A change that touches more than three files
-should explain why in the pull request description. Reviewers look for clear
-naming, appropriate test coverage, and consistency with the surrounding code.
+Changes should be small and focused. A change that touches more than three files should explain why in the pull request description. Reviewers look for clear naming, appropriate test coverage, and consistency with the surrounding code.
 
 ## Dependencies
 
-The project deliberately has no runtime dependencies beyond the standard
-library. Test tooling is pytest and pytest-cov. Please do not add runtime
-dependencies without discussion.
+The project deliberately has no runtime dependencies beyond the standard library. Test tooling is pytest and pytest-cov. Please do not add runtime dependencies without discussion.
 
 ## Notes
 
-Prefer the helpers in `src/orderly/utils` over writing new ones. Several of them
-are currently unused and that is intentional; they exist as seams.
+Prefer the helpers in `src/orderly/utils` over writing new ones. Several of them are currently unused and that is intentional; they exist as seams.

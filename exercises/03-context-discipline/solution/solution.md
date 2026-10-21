@@ -10,20 +10,15 @@
 | Starting a fresh session | a large chunk if the old session was long |
 | Trimming the rules file | smallest per turn, compounding across turns |
 
-People routinely guess the rules file is the big one because it is the thing
-they can see. It is usually third. Say that out loud: the biggest lever is the
-one that is hardest to notice, because nobody prints their file context.
+People routinely guess the rules file is the big one because it is the thing they can see. It is usually third. Say that out loud: the biggest lever is the one that is hardest to notice, because nobody prints their file context.
 
 ## T6 reference fix
 
 The bug spans two files, which is why scoping to one of them fails.
 
-`parse_record` copies optional fields straight through, so an omitted `notes`
-arrives as `None`. `_validate_text` then calls `len(None)` and raises
-`TypeError` instead of a clean `ValidationError`.
+`parse_record` copies optional fields straight through, so an omitted `notes` arrives as `None`. `_validate_text` then calls `len(None)` and raises `TypeError` instead of a clean `ValidationError`.
 
-Either file can own the fix. The cleaner one is the validator, because the
-parser is right to preserve the difference between "absent" and "empty":
+Either file can own the fix. The cleaner one is the validator, because the parser is right to preserve the difference between "absent" and "empty":
 
 ```python
 def _validate_text(record: Dict[str, Any], field: str, limit: int) -> None:
@@ -35,20 +30,13 @@ def _validate_text(record: Dict[str, Any], field: str, limit: int) -> None:
         raise ValidationError(field, f"must be {limit} characters or fewer")
 ```
 
-**The wrong fix** is to make the parser coerce `None` to `""`. It passes the
-acceptance tests and quietly destroys information: downstream code can no
-longer tell a partner who sent an empty note from one who sent none. If an
-agent proposes it, that is a good moment to talk about tests as a floor.
+**The wrong fix** is to make the parser coerce `None` to `""`. It passes the acceptance tests and quietly destroys information: downstream code can no longer tell a partner who sent an empty note from one who sent none. If an agent proposes it, that is a good moment to talk about tests as a floor.
 
 ## The lean rules file
 
-`CLAUDE.md` in this repo is about 90 lines, most of which earn nothing. A
-version that keeps only the lines that change agent behaviour is in
-[CLAUDE.lean.md](CLAUDE.lean.md). It is roughly a quarter of the size.
+`CLAUDE.md` in this repo is about 90 lines, most of which earn nothing. A version that keeps only the lines that change agent behaviour is in [CLAUDE.lean.md](CLAUDE.lean.md). It is roughly a quarter of the size.
 
-The test for a rules file line: **does it change behaviour you would otherwise
-have to correct by hand?** If not, it is decoration you pay rent on, every turn,
-for the life of the session.
+The test for a rules file line: **does it change behaviour you would otherwise have to correct by hand?** If not, it is decoration you pay rent on, every turn, for the life of the session.
 
 Lines worth keeping in this repo:
 
@@ -56,17 +44,10 @@ Lines worth keeping in this repo:
 - the rule that `make test` must stay green
 - the fact that acceptance tests live outside the default test path
 
-Lines worth cutting: the architecture essay, the style preferences your linter
-already enforces, the history of the project, and the list of every directory.
+Lines worth cutting: the architecture essay, the style preferences your linter already enforces, the history of the project, and the list of every directory.
 
 ## Common wrong turns
 
-- **Compacting instead of starting fresh.** Compaction preserves a summary of
-  the bloat. If your old session went down a dead end, a fresh session with a
-  two-sentence problem statement beats a compacted one.
-- **Editing `CLAUDE.md` mid-session.** It sits near the top of the prefix, so
-  changing it invalidates the cache for everything after it. Finish the
-  session first.
-- **Scoping to one file on a two-file bug.** T6 spans parser and validator. An
-  agent given only the validator will write a defensive `try/except` that hides
-  the problem rather than fixing it.
+- **Compacting instead of starting fresh.** Compaction preserves a summary of the bloat. If your old session went down a dead end, a fresh session with a two-sentence problem statement beats a compacted one.
+- **Editing `CLAUDE.md` mid-session.** It sits near the top of the prefix, so changing it invalidates the cache for everything after it. Finish the session first.
+- **Scoping to one file on a two-file bug.** T6 spans parser and validator. An agent given only the validator will write a defensive `try/except` that hides the problem rather than fixing it.

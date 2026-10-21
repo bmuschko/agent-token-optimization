@@ -4,29 +4,21 @@
 
 ## Objective
 
-Measure escalate-on-failure against frontier-everything on your own task mix,
-on both cost and pass rate. You are not being told which wins. You are
-measuring which wins for you.
+Measure escalate-on-failure against frontier-everything on your own task mix, on both cost and pass rate. You are not being told which wins. You are measuring which wins for you.
 
 ## Steps
 
 ### Run A, the control
 
-Work **T1, T2, T3, T4, T6 and T7**, every task with an acceptance test except T8, entirely on your **frontier** model. Record total cost
-and pass rate.
+Work **T1, T2, T3, T4, T6 and T7**, every task with an acceptance test except T8, entirely on your **frontier** model. Record total cost and pass rate.
 
 ### Run B, the routed version
 
-Reset the repo (`git checkout -- src tests` or `git stash`) and work the same
-six tasks on the **cheapest capable** model, escalating a task to the frontier
-model only after its acceptance tests fail **twice**.
+Reset the repo (`git checkout -- src tests` or `git stash`) and work the same six tasks on the **cheapest capable** model, escalating a task to the frontier model only after its acceptance tests fail **twice**.
 
 ### How to measure each run
 
-This exercise compares money, and the proxy does not report money spent, only
-money avoided. `npx ccusage@latest session` prices a whole Claude Code session,
-output tokens and cache included, which is what cost per completed task needs.
-Give Run A and Run B their own sessions so each lands on its own line:
+This exercise compares money, and the proxy does not report money spent, only money avoided. `npx ccusage@latest session` prices a whole Claude Code session, output tokens and cache included, which is what cost per completed task needs. Give Run A and Run B their own sessions so each lands on its own line:
 
 ```bash
 npx ccusage@latest session
@@ -34,9 +26,7 @@ npx ccusage@latest session
 
 Cursor and Copilot users: your own usage dashboard, per session.
 
-One more look is worth taking after Run B. `npx ccusage@latest daily
---breakdown` splits the day's spend by model, which tells you how much of the
-routed run the escalations to the frontier model ate.
+One more look is worth taking after Run B. `npx ccusage@latest daily --breakdown` splits the day's spend by model, which tells you how much of the routed run the escalations to the frontier model ate.
 
 ### Compare
 
@@ -59,31 +49,24 @@ Post your two cost-per-completed-task numbers in chat, **even if B lost**.
 | T6 | bug, two files | `make task T=t6` |
 | T7 | test coverage | `make coverage` |
 
-T7 is done when `src/orderly/pricing/currency.py` reaches 95% line coverage. It
-starts at 52%.
+T7 is done when `src/orderly/pricing/currency.py` reaches 95% line coverage. It starts at 52%.
 
 ## What "cheapest capable" means
 
-Not the cheapest model on the menu. The cheapest model that passes T1, T2 and
-T7 on the first attempt. Find that model and pin it.
+Not the cheapest model on the menu. The cheapest model that passes T1, T2 and T7 on the first attempt. Find that model and pin it.
 
 ## Done when
 
-Two complete runs and a defensible answer to: which route would you use on
-Monday, and for which kinds of task?
+Two complete runs and a defensible answer to: which route would you use on Monday, and for which kinds of task?
 
 ## Expect
 
-**Run B takes longer in wall-clock time even when it costs less.** That latency
-is a real cost. Write it down next to the money.
+**Run B takes longer in wall-clock time even when it costs less.** That latency is a real cost. Write it down next to the money.
 
-If you are running short, cut the task list to T1, T2, T4 and T7. Never cut the
-control run; without it you have nothing to compare against.
+If you are running short, cut the task list to T1, T2, T4 and T7. Never cut the control run; without it you have nothing to compare against.
 
 ## If you get stuck
 
-- **Escalating mid-task made things more expensive.** Switching models
-  invalidates the prefix cache. Escalate at a task boundary, not in the middle
-  of a turn.
+- **Escalating mid-task made things more expensive.** Switching models invalidates the prefix cache. Escalate at a task boundary, not in the middle of a turn.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

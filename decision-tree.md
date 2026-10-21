@@ -26,8 +26,7 @@ One page. Print it, or keep it open.
 cost per completed task = total spend / tasks that pass their tests
 ```
 
-Not cost per token. A cheap model that fails twice and then succeeds cost you
-three runs for one result.
+Not cost per token. A cheap model that fails twice and then succeeds cost you three runs for one result.
 
 ## The order that pays
 
@@ -62,5 +61,4 @@ Each one turns a 0.1x cache read into a 1.25x cache write.
 
 ## The one rule
 
-**Never trade a cheaper bill for broken code.** A 60% token cut that fails the
-tests is a 100% waste.
+**Never trade a cheaper bill for broken code.** A 60% token cut that fails the tests is a 100% waste.
