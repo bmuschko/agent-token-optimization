@@ -1,0 +1,62 @@
+name: Tasks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify-starting-line:
+    name: Every task is red and the regression suite is green
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: make install
+
+      - name: Regression suite stays green
+        run: make test
+
+      - name: Acceptance tests fail as documented
+        run: |
+          expect() {
+            local want="$1" summary
+            shift
+            summary="$(make "$@" 2>&1 | grep -E '^=+ .*(passed|failed).* =+$' | tail -1)"
+            echo "make $*: $summary"
+            if ! grep -q "$want" <<<"$summary"; then
+              echo "::error::expected '$want' from 'make $*'"
+              return 1
+            fi
+          }
+          expect "3 failed, 1 passed" task T=t1
+          expect "2 failed, 1 passed" task T=t2
+          expect "2 failed, 1 passed" task T=t3
+          expect "3 failed, 2 passed" task T=t4
+          expect "2 failed, 1 passed" task T=t6
+          expect "failed" task T=t8
+
+      - name: Coverage of currency.py stops at 52 percent
+        run: |
+          if make coverage > coverage.log 2>&1; then
+            echo "::error::'make coverage' passed, but T7 should start red"
+            cat coverage.log
+            exit 1
+          fi
+          grep -q "Total coverage: 52" coverage.log || {
+            echo "::error::coverage is no longer 52 percent"
+            cat coverage.log
+            exit 1
+          }
+
+      - name: Running the targets leaves the tree unchanged
+        run: |
+          make clean
+          rm -f coverage.log
+          git status --porcelain
+          test -z "$(git status --porcelain)"
