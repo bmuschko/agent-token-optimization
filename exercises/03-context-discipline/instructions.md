@@ -88,6 +88,8 @@ The second look is the per-agent view from Exercise 2: `ccwhy session "$id"` on 
    claude --session-id "$id"
    ```
 
+   Now use the following prompt, or something close to it:
+
    > A record without `notes` raises `TypeError` in the validator instead of validating cleanly. `src/orderly/ingest/parser.py` passes omitted optional fields through as `None`, and `src/orderly/ingest/validator.py` calls `len()` on them. Fix it so a missing or `None` optional field validates, while over-long notes are still rejected. Only those two files should change.
 
    Verify, `/exit`, read the row the same way, and note it as the scoped run with its own cache read share, attempts and test result.
@@ -99,12 +101,7 @@ The second look is the per-agent view from Exercise 2: `ccwhy session "$id"` on 
    drop  = (bloated total - scoped total) / bloated total
    ```
 
-   Then compare the cache read shares, and put the two second looks side by side: how many files did each run read on its own? That is the best evidence you have for which of the three changes did the most work. It is evidence, not a measurement: you changed three things between the runs, so the answer you post in step 7 is a judgment, and the solution says what it usually is.
-
-6. **If time permits, scope T1 as well.** You have its baseline from Exercise
-   1. Put the bug back with `git checkout -- src/orderly/pricing/discount.py`, run it once more in a fresh session with the trimmed rules file and a prompt that names the file, and note it next to the baseline. One-character fixes are where scoping gains the least in absolute terms and the most as a percentage, which is worth seeing once.
-
-7. **Post three things in chat:** the drop as a percentage, pass or fail, and which of the three changes you think did the most work.
+   Then compare the cache read shares, and put the two second looks side by side: how many files did each run read on its own? That is the best evidence you have for which of the three changes did the most work. It is evidence, not a measurement: you changed three things between the runs, so the answer is a judgment, and the solution says what it usually is.
 
 ## Done when
 
