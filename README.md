@@ -33,7 +33,7 @@ A task is done when its acceptance tests pass **and** the regression suite is st
 
 ## About `CLAUDE.md`
 
-The rules file in this repository is deliberately overgrown. It is roughly ninety lines, most of which earn nothing, and it is the raw material for Exercise 3. Do not take it as a model to copy. The lean version that survives the exercise is in [`exercises/03-context-discipline/solution/CLAUDE.lean.md`](exercises/03-context-discipline/solution/CLAUDE.lean.md).
+The rules file in this repository is deliberately overgrown. It is just over eighty lines, most of which earn nothing, and it is the raw material for Exercise 3. Do not take it as a model to copy. The lean version that survives the exercise is in [`exercises/03-context-discipline/solution/CLAUDE.lean.md`](exercises/03-context-discipline/solution/CLAUDE.lean.md).
 
 ## Cost
 

@@ -21,6 +21,7 @@ Later exercises shrink one factor or the other. You will measure two tasks and n
 | Cache read | the part of the input served from the prompt cache, at a tenth of the price or less, depending on the model |
 | Cache write | the part written into the cache, at 1.25 times the price |
 | Cost | the four above, priced, in US dollars |
+| Requests | how many times the agent called the model; each call resends the whole window |
 | Attempts | how many times you sent the agent back after a red test, counted by hand |
 | Tests pass | whether both test commands ended green, noted by hand |
 
@@ -105,7 +106,7 @@ Run every command from the repository root: the tests need the Makefile there, t
 
    ```
    session=f5ba87fa-2c1e-4f0b-9a7d-3e8c5b6d1a20 client=claude model=claude-fable-5-1
-   Input 66 · Output 643 · Cache read 87,543 · Cache write 20,760 · Cost $0.47
+   Input 66 · Output 643 · Cache read 87,543 · Cache write 20,760 · Cost $0.47 · Requests 5
    ```
 
    Note the five numbers as your T1 baseline, with the model, your attempts and whether the tests passed.

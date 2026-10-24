@@ -14,7 +14,7 @@ Nothing new to install. The task is T6, which none of the earlier tasks touched,
 
 Two things to know before the first session:
 
-- The rules file is edited **between** sessions. Claude Code reads it once at session start and holds it, so an edit during a session reaches the agent only at the next `/clear`, `/compact` or restart. Trim it after the first session ends and before the second begins, and the second session starts with the lean file.
+- The rules file is edited **between** sessions. Claude Code reads it once at session start and holds it, so an edit during a session reaches the agent only at the next `/clear`, `/compact` or restart. Trim it after the second session ends and before the third begins, so the lean run is the only one that starts with the lean file.
 - After each run, `git status`. The agent may have touched more than the two files the task names, and that is part of the run's cost.
 
 ## The measurement
@@ -50,38 +50,34 @@ The second look is the per-agent view from Exercise 2: `ccwhy session "$id"` on 
 
    > Partners sometimes omit optional fields such as `notes`. A record without `notes` currently raises `TypeError` during validation instead of validating cleanly. Fix it.
 
-   When it says it is done, verify in the second terminal, then `/exit` and read the row:
+   When it says it is done, verify in the second terminal:
 
    ```bash
    make task T=t6
    make test
    ```
 
+   Back in the session, run `/context` and note the Memory files figure, which is the rules file as the agent holds it. Then `/exit` and read the row:
+
    ```bash
    npx tokscale@latest --json --no-spinner --today --group-by client,session,model \
      | uv run python scripts/session_row.py "$id"
    ```
 
-   Other agents read the row as in Exercise 1: list before and after. Note it as the bloated run, with the cache read share. Add your attempts, the number of times you sent the agent back after a red test, and whether both commands ended green. Neither comes from a tool. Take the second look now too, `ccwhy session "$id"` on Claude Code or your agent's view from Exercise 2, and keep it for step 5; nothing from it goes into the comparison. Then put the task back for the second run:
+   Other agents read the row as in Exercise 1: list before and after. Note it as the **bloated run**, with the cache read share and the Requests figure. Add your attempts, the number of times you sent the agent back after a red test, and whether both commands ended green. Neither comes from a tool. Take the second look now too, `ccwhy session "$id"` on Claude Code or your agent's view from Exercise 2, and keep it for step 5; nothing from it goes into the comparison. Then put the task back:
 
    ```bash
    git checkout -- src/orderly/ingest
    make task T=t6        # red again
    ```
 
-3. **Change three things between the sessions.**
+3. **The scoped run: change the prompt, keep the rules file.** Find the files with one search instead of a session:
 
-   - **Trim the rules file.** `CLAUDE.md` in this repo is deliberately overgrown. Cut it to what this task needs: where the source and tests live, how to run them, the rule that `make test` must stay green. Do not commit it; `git checkout CLAUDE.md` restores it whenever you want.
-   - **Find the files with one search instead of a session.**
+   ```bash
+   grep -rn "notes" src/orderly/ingest --include='*.py'
+   ```
 
-     ```bash
-     grep -rn "notes" src/orderly/ingest --include='*.py'
-     ```
-
-     One grep, one file list, and you start the next session already knowing where to look. Both `parser.py` and `validator.py` are in it, and the task needs both.
-   - **A fresh session**, which the loop gives you anyway. No overview prompt this time.
-
-4. **The scoped run.** New id, and a prompt that names the files:
+   One grep, one file list, and you start the next session already knowing where to look. Both `parser.py` and `validator.py` are in it, and the task needs both. New id, fresh session, no overview prompt this time:
 
    ```bash
    id=$(uuidgen | tr 'A-Z' 'a-z')
@@ -92,32 +88,49 @@ The second look is the per-agent view from Exercise 2: `ccwhy session "$id"` on 
 
    > A record without `notes` raises `TypeError` in the validator instead of validating cleanly. `src/orderly/ingest/parser.py` passes omitted optional fields through as `None`, and `src/orderly/ingest/validator.py` calls `len()` on them. Fix it so a missing or `None` optional field validates, while over-long notes are still rejected. Only those two files should change.
 
-   Verify, `/exit`, read the row the same way, and note it as the scoped run with its own cache read share, attempts and test result.
+   Verify, `/exit`, read the row the same way, and note it as the **scoped run** with its own cache read share, Requests, attempts and test result. Keep the prompt; the next run sends it again. Put the task back once more:
 
-5. **Compare.**
-
-   ```
-   total = Input + Output + Cache read + Cache write
-   drop  = (bloated total - scoped total) / bloated total
+   ```bash
+   git checkout -- src/orderly/ingest
    ```
 
-   Then compare the cache read shares, and put the two second looks side by side: how many files did each run read on its own? That is the best evidence you have for which of the three changes did the most work. It is evidence, not a measurement: you changed three things between the runs, so the answer is a judgment, and the solution says what it usually is.
+4. **The lean run: trim the rules file, same prompt.** `CLAUDE.md` in this repo is deliberately overgrown. Cut it to what this task needs: where the source and tests live, how to run them, the rule that `make test` must stay green. Do not commit it; `git checkout CLAUDE.md` restores it whenever you want.
+
+   New id, fresh session, and the prompt from step 3 word for word. Verify, run `/context` and note the Memory files figure again, `/exit`, read the row, and note it as the **lean run**.
+
+5. **Compare and attribute.** Three runs and two changes, so each difference is one change:
+
+   ```
+   total  = Input + Output + Cache read + Cache write
+   drop   = (bloated total - lean total) / bloated total
+   prompt = bloated total - scoped total     # naming the files, no overview history
+   rules  = scoped total - lean total        # trimming CLAUDE.md
+   ```
+
+   What each run should have produced:
+
+   - **The scoped run, step 3, is where the drop happens.** Expect its total at a fraction of the bloated run's, with fewer Requests, a second look that shows one or two file reads instead of a walk through the package, and both commands green. Almost the entire drop is in this difference.
+   - **The lean run, step 4, is a small step below the scoped run.** Trimming saves the same number of tokens on every request, so the saving is the two Memory files figures apart, times the lean run's Requests. With a thousand tokens trimmed and five requests, that is five thousand tokens, a few percent of the drop. Expect the same Requests figure as the scoped run, since only the rules file changed, and both commands green. If the rules figure is far from that prediction, the two runs differed in something else; compare their Requests and their second looks.
+
+   The dollar share of the rules file is smaller than its token share: after the first request it sits in the cached prefix at a tenth of the price.
+
+   The prompt figure is two changes in one, naming the files and dropping the overview history. The second looks separate them roughly: the bloated run's per-turn table shows what the overview cost on its own and how much history every later request carried, and its file reads show what the vague prompt made the agent open. Then compare the cache read shares across the three runs.
 
 ## Done when
 
-- The bloated and scoped T6 runs noted, with a drop
-- The scoped run's acceptance tests pass and `make test` is still green
+- Three T6 runs noted, with the drop split between the prompt and the rules file
+- The lean run's acceptance tests pass and `make test` is still green
 
 A token drop with a red suite is a failed exercise, and a useful one. Say so in chat if it happens to you.
 
 ## Expect
 
-A drop between 40 and 70%. If you are over 90%, check your tests: you have probably scoped away something the task needed.
+A drop between 40 and 70%, nearly all of it from the prompt. The rules file comes to a few percent of the tokens and less of the cost, which is the opposite of what most people guess. If you are over 90%, check your tests: you have probably scoped away something the task needed.
 
 ## If you get stuck
 
-- **You trimmed the rules file mid-session and nothing changed.** Claude Code read it once at startup and is still holding the long version. Finish the session; the scoped run starts with the trimmed file.
-- **The scoped run changed only one file.** T6 spans parser and validator. An agent shown only the validator writes a defensive patch that hides the problem. A fix that passes `make task T=t6` but leaves the parser alone is worth reading closely.
+- **You trimmed the rules file mid-session and nothing changed.** Claude Code read it once at startup and is still holding the long version. Finish the session; the lean run starts with the trimmed file.
+- **The scoped or lean run changed only one file.** T6 spans parser and validator. An agent shown only the validator writes a defensive patch that hides the problem. A fix that passes `make task T=t6` but leaves the parser alone is worth reading closely.
 - **You reset `src/orderly/ingest` and the tests are still green.** The agent fixed it somewhere else. `git status` shows where.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

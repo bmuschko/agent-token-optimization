@@ -2,15 +2,18 @@
 
 ## What the drop usually is
 
-40 to 70%, with the three changes contributing roughly in this order. This is a judgment from the second look, how many files each run read, not something the two rows can separate:
+40 to 70%, and the three runs split it between two changes:
 
 | Change | Typical share of the saving |
 |---|---|
-| Naming the files instead of loading the repo | most of it |
-| Starting a fresh session | a large chunk if the old session was long |
-| Trimming the rules file | smallest per turn, compounding across turns |
+| Naming the files and dropping the overview history | nearly all of it |
+| Trimming the rules file | a few percent of the tokens, less of the cost |
 
-People routinely guess the rules file is the big one because it is the thing they can see. It is usually third. Say that out loud: the biggest lever is the one that is hardest to notice, because nobody prints their file context.
+The rules-file share is the one you can predict before running anything. The full file is about 1,100 tokens and the lean one about 120, so trimming saves about 1,000 tokens per request. A lean run of five requests saves 5,000 tokens against a drop in the hundreds of thousands, and because the file is served from the cache after the first request, the money saved is a tenth of that again. The third run measures the same thing, and the two agree unless the agent took a different path between the scoped and lean runs, which their Requests figures show.
+
+Within the prompt share, the second looks usually put naming the files ahead of dropping the overview history, because the vague prompt makes the agent open file after file and every file opened is resent on each request that follows. The overview history is a large fixed block; the file reads grow the window turn by turn.
+
+People routinely guess the rules file is the big one because it is the thing they can see. Say that out loud: the biggest lever is the one that is hardest to notice, because nobody prints their file context.
 
 ## T6 reference fix
 
@@ -34,7 +37,7 @@ def _validate_text(record: Dict[str, Any], field: str, limit: int) -> None:
 
 ## The lean rules file
 
-`CLAUDE.md` in this repo is 107 lines, about 1,100 tokens, most of which earn nothing. A version that keeps only the lines that change agent behaviour is in [CLAUDE.lean.md](CLAUDE.lean.md). It is roughly a quarter of the size.
+`CLAUDE.md` in this repo is 84 lines, about 1,100 tokens, most of which earn nothing. A version that keeps only the lines that change agent behaviour is in [CLAUDE.lean.md](CLAUDE.lean.md). It is about a tenth of the size.
 
 The test for a rules file line: **does it change behaviour you would otherwise have to correct by hand?** If not, it is decoration you pay rent on, every turn, for the life of the session.
 

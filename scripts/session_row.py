@@ -15,7 +15,8 @@ def collapse_sessions(entries):
         row = rows.setdefault(
             entry["sessionId"],
             {"client": entry["client"], "models": [], "input_tokens": 0,
-             "output_tokens": 0, "cache_read": 0, "cache_write": 0, "cost_usd": 0.0},
+             "output_tokens": 0, "cache_read": 0, "cache_write": 0, "cost_usd": 0.0,
+             "requests": 0},
         )
         row["models"].append(entry["model"])
         row["input_tokens"] += entry["input"]
@@ -23,16 +24,17 @@ def collapse_sessions(entries):
         row["cache_read"] += entry["cacheRead"]
         row["cache_write"] += entry["cacheWrite"]
         row["cost_usd"] += entry["cost"]
+        row["requests"] += entry["messageCount"]
     return rows
 
 
 def print_row(session_id, row):
-    """Print one session as labelled figures, cost rounded to cents."""
+    """Print one session as labelled figures, cost rounded to cents, plus its request count."""
     print(f"session={session_id} client={row['client']} model={'+'.join(row['models'])}")
     print(
         f"Input {row['input_tokens']:,} · Output {row['output_tokens']:,} · "
         f"Cache read {row['cache_read']:,} · Cache write {row['cache_write']:,} · "
-        f"Cost ${row['cost_usd']:.2f}"
+        f"Cost ${row['cost_usd']:.2f} · Requests {row['requests']}"
     )
 
 
