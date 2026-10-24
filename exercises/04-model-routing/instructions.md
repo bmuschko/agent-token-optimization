@@ -18,15 +18,17 @@ Reset the repo (`git checkout -- src tests` or `git stash`) and work the same si
 
 ### How to measure each run
 
-This exercise compares money, and the proxy does not report money spent, only money avoided. `npx ccusage@latest session` prices a whole Claude Code session, output tokens and cache included, which is what cost per completed task needs. Give Run A and Run B their own sessions so each lands on its own line:
+This exercise compares money, and the proxy does not report money spent, only money avoided. tokscale prices a whole session, output tokens and cache included, which is what cost per completed task needs, and it does so for every agent. Give Run A and Run B their own sessions so each lands on its own row, and read each row exactly as in Exercise 1:
 
 ```bash
-npx ccusage@latest session
+COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,session,model
 ```
 
-Cursor and Copilot users: your own usage dashboard, per session.
+One more look is worth taking after Run B. Grouping by model instead of session splits the day's spend by model, which tells you how much of the routed run the escalations to the frontier model ate:
 
-One more look is worth taking after Run B. `npx ccusage@latest daily --breakdown` splits the day's spend by model, which tells you how much of the routed run the escalations to the frontier model ate.
+```bash
+COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,model
+```
 
 ### Compare
 

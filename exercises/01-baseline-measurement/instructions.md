@@ -18,7 +18,7 @@ Later exercises shrink one factor or the other. You will measure two tasks and n
 |---|---|
 | Input | everything the agent sent, summed over all requests |
 | Output | everything the model wrote back |
-| Cache read | the part of the input served from the prompt cache, at a tenth of the price |
+| Cache read | the part of the input served from the prompt cache, at a tenth of the price or less, depending on the model |
 | Cache write | the part written into the cache, at 1.25 times the price |
 | Cost | the four above, priced, in US dollars |
 | Attempts | how many times you sent the agent back after a red test, counted by hand |
@@ -45,7 +45,7 @@ How you find your row depends on whether you can name the session before it star
 - **Claude Code** lets you choose the session id, so you pull the row by id.
 - **Codex CLI, Copilot CLI, Gemini CLI** assign their own id. List the sessions before and after the task; the row that appeared is yours.
 - **Cursor** writes no local log. tokscale pulls today's total from Cursor's API, so you read it before and after and subtract.
-- **Copilot in VS Code** is not something tokscale can read. Add up the per-request figures in the VS Code Chat Debug View by hand.
+- **Copilot in VS Code** writes its chat sessions under VS Code's workspace storage, which tokscale reads and lists under the Copilot client. Those rows carry input and output only, no cache split, so the cost column prices every input token at full rate. Find your row as the CLIs do: list before and after.
 
 tokscale prices tokens at API list rates from the LiteLLM table. On a subscription you did not pay that amount, but it is the same unit on every row, which is what comparison needs.
 
@@ -64,7 +64,7 @@ Run every command from the repository root: the tests need the Makefile there, t
    claude --session-id "$id"
    ```
 
-   **Codex CLI, Copilot CLI, Gemini CLI.** Snapshot the sessions tokscale already knows, then start `codex`, `copilot` or `gemini` as you normally do.
+   **Codex CLI, Copilot CLI, Gemini CLI, Copilot in VS Code.** Snapshot the sessions tokscale already knows, then start `codex`, `copilot` or `gemini` as you normally do, or open a new chat in VS Code.
 
    ```bash
    COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,session,model
@@ -110,7 +110,7 @@ Run every command from the repository root: the tests need the Makefile there, t
 
    Note the five numbers as your T1 baseline, with the model, your attempts and whether the tests passed.
 
-   **Codex CLI, Copilot CLI, Gemini CLI.** Run the snapshot command from step 2 again. The row that was not there before is your session.
+   **Codex CLI, Copilot CLI, Gemini CLI, Copilot in VS Code.** Run the snapshot command from step 2 again. The row that was not there before is your session. A VS Code row shows zero in both cache columns; that is the log, not your usage.
 
    **Cursor.** Sync and print today's total again, and subtract the before snapshot column by column. Cursor's API can lag by a few minutes; if the total has not moved, sync once more before you conclude the task was free.
 

@@ -40,7 +40,7 @@ uv --version
 node --version
 ```
 
-Node is only needed for `tokscale`, which Exercises 1, 2 and 4 read their numbers from, so do install it.
+Node is only needed for `tokscale`, which Exercises 1 to 4 read their numbers from, so do install it.
 
 ## The repository
 
@@ -105,11 +105,11 @@ Claude Code requires a Pro, Max, Team, Enterprise, or Console account. The free 
 
 ### Cursor
 
-Download from [cursor.com](https://cursor.com) and sign in. For the session, know where your usage dashboard is and which model your Auto setting resolves to: [Models and pricing](https://cursor.com/docs/models-and-pricing).
+Download from [cursor.com](https://cursor.com) and sign in. For the session, know three things: where your usage dashboard is, which model your Auto setting resolves to ([Models and pricing](https://cursor.com/docs/models-and-pricing)), and that clicking the context ring in the chat input opens a breakdown of the window by rules, tools, MCP, skills and conversation.
 
 ### GitHub Copilot
 
-Either the VS Code extension or the CLI. If you use the CLI, note that the per-interaction token view lives only in the **VS Code Chat Debug View**, so install the extension too if you want to see per-request numbers. Billing reference: [Usage-based billing for individuals](https://docs.github.com/copilot/concepts/billing/usage-based-billing-for-individuals).
+Either the VS Code extension or the CLI. In VS Code, the context window control in the chat input shows the session's credits and cumulative tokens, hovering a response shows that turn's credits, and the Agent Debug Logs and Cache Explorer add tool calls and cache hit rates. The CLI has `/context` and `/usage`, and logs per-request usage under `~/.copilot/`, which tokscale and `scripts/copilot_session.py` read. Billing reference: [Usage-based billing for individuals](https://docs.github.com/copilot/concepts/billing/usage-based-billing-for-individuals).
 
 ## Headroom, the measuring proxy
 
@@ -127,7 +127,7 @@ Wrap your agent in one command:
 headroom wrap claude        # also: codex, copilot, cursor, aider, opencode
 ```
 
-`headroom wrap cursor` prints a configuration to paste into Cursor rather than launching it.
+`headroom wrap cursor` prints a configuration to paste into Cursor rather than launching it, but Cursor sends every request through its own servers, so a proxy on your machine never sees them; that configuration only works with your own API key and a proxy reachable from the internet. Cursor users skip the proxy and read Exercises 5 and 6 from the context ring and the usage dashboard.
 
 Or run the proxy standalone and point your agent at it. The example below is for Claude Code; other agents use a different environment variable:
 

@@ -14,16 +14,16 @@ Nothing new to install. The task is T6, which none of the earlier tasks touched,
 
 Two things to know before the first session:
 
-- The rules file is edited **between** sessions, never during one. It sits near the top of every request, and changing it mid-session invalidates the prompt cache for everything after it.
+- The rules file is edited **between** sessions. Claude Code reads it once at session start and holds it, so an edit during a session reaches the agent only at the next `/clear`, `/compact` or restart. Trim it after the first session ends and before the second begins, and the second session starts with the lean file.
 - After each run, `git status`. The agent may have touched more than the two files the task names, and that is part of the run's cost.
 
 ## The measurement
 
-The drop you are after is in input tokens, nearly all of it the prefix resent with every request: the rules file, the files the agent loaded, the history. On a `ccusage` row that is Input plus Cache Create plus Cache Read, the same row Exercise 1 read, so the instrument is the same: one session per run, found by its id. The drop is computed on Total Tokens, which adds the small output figure to those three. It is close enough to the input-side drop that the distinction does not matter here.
+The drop you are after is in input tokens, nearly all of it the prefix resent with every request: the rules file, the files the agent loaded, the history. On a tokscale row that is Input plus Cache write plus Cache read, the same row Exercise 1 read, so the instrument is the same: one session per run, read exactly as you read T1. The drop is computed on the total of all four token columns, output included; output is small enough that this is the input-side drop for practical purposes.
 
-`ccwhy session` is the second look, and here it answers the question the exercise ends on: which change did the work. Its per-turn table shows the prefix shrinking, and its tool-call count shows how many files the agent read on its own. Its totals run high for the reason given in Exercise 2, so the drop is computed from the `ccusage` rows and `ccwhy` supplies the shape.
+Note one more figure per run, the **cache read share**: Cache read divided by Input plus Cache read plus Cache write. Section 3 argued that a stable prefix turns full-price input into cheap cache reads; this is where you see whether yours did. Copilot in VS Code rows have no cache columns, so skip the share there.
 
-Cursor and Copilot users: your usage dashboard, one session per run.
+The second look is the per-agent view from Exercise 2: `ccwhy session "$id"` on Claude Code, `scripts/copilot_session.py` on Copilot CLI, Agent Session Viewer in VS Code, the transcript folder in Cursor. It shows how many files each run read on its own, which is the evidence for the question the exercise ends on.
 
 ## Steps
 
@@ -58,11 +58,11 @@ Cursor and Copilot users: your usage dashboard, one session per run.
    ```
 
    ```bash
-   COLUMNS=200 npx ccusage@latest session | grep -E "^│ Session|${id:0:8}"
-   ccwhy session "$id"
+   npx tokscale@latest --json --no-spinner --today --group-by client,session,model \
+     | uv run python scripts/session_row.py "$id"
    ```
 
-   Note the `ccusage` row as the bloated run. Add your attempts, the number of times you sent the agent back after a red test, and whether both commands ended green. Neither comes from a tool. Keep the `ccwhy` output for step 5; nothing from it goes into the comparison. Then put the task back for the second run:
+   Other agents read the row as in Exercise 1: list before and after. Note it as the bloated run, with the cache read share. Add your attempts, the number of times you sent the agent back after a red test, and whether both commands ended green. Neither comes from a tool. Take the second look now too, `ccwhy session "$id"` on Claude Code or your agent's view from Exercise 2, and keep it for step 5; nothing from it goes into the comparison. Then put the task back for the second run:
 
    ```bash
    git checkout -- src/orderly/ingest
@@ -90,15 +90,16 @@ Cursor and Copilot users: your usage dashboard, one session per run.
 
    > A record without `notes` raises `TypeError` in the validator instead of validating cleanly. `src/orderly/ingest/parser.py` passes omitted optional fields through as `None`, and `src/orderly/ingest/validator.py` calls `len()` on them. Fix it so a missing or `None` optional field validates, while over-long notes are still rejected. Only those two files should change.
 
-   Verify, `/exit`, read the row the same way, and note it as the scoped run with its own attempts and test result.
+   Verify, `/exit`, read the row the same way, and note it as the scoped run with its own cache read share, attempts and test result.
 
 5. **Compare.**
 
    ```
-   drop = (bloated Total Tokens - scoped Total Tokens) / bloated Total Tokens
+   total = Input + Output + Cache read + Cache write
+   drop  = (bloated total - scoped total) / bloated total
    ```
 
-   Then put the two `ccwhy session` outputs side by side. The per-turn table shows how much each request resent, and "Tools Used" shows how many files the agent read on its own in each run. That is the evidence for which of the three changes did the most work.
+   Then compare the cache read shares, and put the two second looks side by side: how many files did each run read on its own? That is the best evidence you have for which of the three changes did the most work. It is evidence, not a measurement: you changed three things between the runs, so the answer you post in step 7 is a judgment, and the solution says what it usually is.
 
 6. **If time permits, scope T1 as well.** You have its baseline from Exercise
    1. Put the bug back with `git checkout -- src/orderly/pricing/discount.py`, run it once more in a fresh session with the trimmed rules file and a prompt that names the file, and note it next to the baseline. One-character fixes are where scoping gains the least in absolute terms and the most as a percentage, which is worth seeing once.
@@ -118,7 +119,7 @@ A drop between 40 and 70%. If you are over 90%, check your tests: you have proba
 
 ## If you get stuck
 
-- **You trimmed the rules file mid-session and the cost went up.** That is the prefix cache being invalidated. Edit the rules file *between* sessions.
+- **You trimmed the rules file mid-session and nothing changed.** Claude Code read it once at startup and is still holding the long version. Finish the session; the scoped run starts with the trimmed file.
 - **The scoped run changed only one file.** T6 spans parser and validator. An agent shown only the validator writes a defensive patch that hides the problem. A fix that passes `make task T=t6` but leaves the parser alone is worth reading closely.
 - **You reset `src/orderly/ingest` and the tests are still green.** The agent fixed it somewhere else. `git status` shows where.
 

@@ -41,4 +41,4 @@ Budget roughly **$3** of your own token usage for the full session.
 
 ## Which agent
 
-Claude Code, Cursor, or GitHub Copilot. Any one is fine and every exercise is agent-agnostic, with one caveat: Copilot's per-interaction token view is only available in the VS Code Chat Debug View, not in the CLI.
+Claude Code, Cursor, or GitHub Copilot. Any one is fine. Every exercise reads its numbers from the same tool, tokscale, and reads the window from the agent's own view. Two limits to know before you choose: Copilot in VS Code logs input and output tokens only, with no cache split, so its rows price every input token at full rate; and the Headroom proxy in Exercises 5 and 6 cannot see Cursor's traffic, which goes through Cursor's own servers, so Cursor users read those two exercises from the context indicator and the usage dashboard instead.

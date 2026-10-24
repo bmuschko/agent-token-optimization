@@ -67,5 +67,5 @@ Take the generous half seriously, though, because cynicism is not the lesson. A 
 ## Common wrong turns
 
 - **Measuring in absolute tokens only.** The percentage is what makes it stick.
-- **Disabling a server you actually need mid-session.** That is a prefix change; it invalidates the cache and costs you a full rewrite. Toggle servers between sessions.
+- **Disabling a server you actually need mid-session.** With tool definitions loaded up front, that is a prefix change: it invalidates the cache and costs a full rewrite. With tool search on, the tool list is pinned for the conversation, so the change only half applies until the next session. Either way, toggle servers between sessions.
 - **Treating the 85% as your number.** It describes a five-server setup. Yours is whatever you just measured.

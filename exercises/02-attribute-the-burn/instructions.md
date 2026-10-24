@@ -47,7 +47,7 @@ The two questions need different evidence. Cost per kind is one number per sessi
    | Claude Code | `/context` |
    | Copilot CLI | `/context`, and `/usage` for the session's totals |
    | Copilot in VS Code | hover the context window control in the chat input; the Agent Debug Logs add tool calls and the cache hit rate |
-   | Cursor | the context indicator in the chat input |
+   | Cursor | click the context ring in the chat input; it opens a breakdown by rules, tools, MCP, skills and conversation |
 
    The rules file, your tool definitions, file context and history are yours; the system prompt and built-in tools are the vendor's. The largest of *your* categories is your sink.
 

@@ -2,7 +2,7 @@
 
 ## What the drop usually is
 
-40 to 70%, with the three changes contributing roughly in this order:
+40 to 70%, with the three changes contributing roughly in this order. This is a judgment from the second look, how many files each run read, not something the two rows can separate:
 
 | Change | Typical share of the saving |
 |---|---|
@@ -34,7 +34,7 @@ def _validate_text(record: Dict[str, Any], field: str, limit: int) -> None:
 
 ## The lean rules file
 
-`CLAUDE.md` in this repo is about 90 lines, most of which earn nothing. A version that keeps only the lines that change agent behaviour is in [CLAUDE.lean.md](CLAUDE.lean.md). It is roughly a quarter of the size.
+`CLAUDE.md` in this repo is 107 lines, about 1,100 tokens, most of which earn nothing. A version that keeps only the lines that change agent behaviour is in [CLAUDE.lean.md](CLAUDE.lean.md). It is roughly a quarter of the size.
 
 The test for a rules file line: **does it change behaviour you would otherwise have to correct by hand?** If not, it is decoration you pay rent on, every turn, for the life of the session.
 
@@ -48,6 +48,6 @@ Lines worth cutting: the architecture essay, the style preferences your linter a
 
 ## Common wrong turns
 
-- **Compacting instead of starting fresh.** Compaction preserves a summary of the bloat. If your old session went down a dead end, a fresh session with a two-sentence problem statement beats a compacted one.
-- **Editing `CLAUDE.md` mid-session.** It sits near the top of the prefix, so changing it invalidates the cache for everything after it. Finish the session first.
+- **Compacting instead of clearing.** Compaction preserves a summary of the bloat. The overview prompt was a different task, so the move is `/clear`, which costs nothing. If a session went down a dead end, `/rewind` to before it; never compact one.
+- **Editing `CLAUDE.md` mid-session.** Claude Code reads it once at startup, so the edit does not reach the agent until the next `/clear`, `/compact` or restart. Finish the session first, then trim.
 - **Scoping to one file on a two-file bug.** T6 spans parser and validator. An agent given only the validator will write a defensive `try/except` that hides the problem rather than fixing it.

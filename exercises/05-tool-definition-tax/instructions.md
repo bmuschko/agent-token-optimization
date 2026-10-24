@@ -37,7 +37,9 @@ headroom wrap claude --no-proxy --project-settings  # or: codex | copilot | curs
 
    **Why `/context` and not the proxy.** The tax is a share of the window, and only the agent knows what is in its window. The proxy sees requests on the wire; it cannot tell tool schemas from conversation, and with on-demand tool loading the deferred schemas never cross the wire at all. `/context` reports the window itself, with tool definitions as their own line.
 
-   **Other agents**, which have no window view: send an identical trivial request twice, once with your MCP servers enabled and once with them disabled, and diff the input token count the proxy reports. Reset between the two so each reading stands alone:
+   **Copilot CLI** has `/context` too, and **Cursor** shows the same thing when you click the context ring: the Tools and MCP buckets, as tokens and as a share of the window. Read those.
+
+   **Copilot in VS Code** has no breakdown, so measure by difference: send an identical trivial request in two fresh chats, once with your MCP servers enabled and once with them disabled, and compare the context token figure in the context window control. If you launched the CLI through the proxy, the same diff works from `headroom savings`, reset between the two readings so each stands alone:
 
    ```bash
    headroom savings --reset
@@ -48,12 +50,14 @@ headroom wrap claude --no-proxy --project-settings  # or: codex | copilot | curs
    headroom savings          # after
    ```
 
+   The proxy diff does not work for Cursor; its requests never pass through a local proxy.
+
 2. **Record it as a share of a typical request.** "31% of every request I send" is a number you will remember. "18,400 tokens" is not.
 
 3. **Cut it**, using whichever of these your tooling supports:
 
-   - **Deferred loading / tool search**, if your agent exposes it. Mark the long tail of tools `defer_loading: true` and keep your two or three highest-frequency tools always loaded.
-   - **Otherwise, disable every server you have not used in a month.** This is not a consolation prize. It is often the larger win and it is available to everyone today.
+   - **Check that deferred loading is on.** Claude Code, Cursor and Copilot CLI all defer MCP tool definitions by default now: only the tool names ride along until a tool is used, and `/context` lists the deferred figure on its own line. If your tax is a large share of the window, something is loading up front, and Claude Code's `/context` says which.
+   - **Disable every server you have not used in a month.** With deferral on, this is the cut that is left, and it is the larger one anyway: the names, the server instructions and the attention they take are paid whether or not the schemas load.
 
 4. **Measure again. Post before and after in chat.**
 
@@ -69,7 +73,7 @@ Your tax is zero and that is a legitimate result. Use the time on a side task in
 
 ## If you get stuck
 
-- **Deferred loading is not available in your version.** Fall back to disabling unused servers. Note which tools you lost access to; that is the real trade-off.
+- **Deferred loading is off or unavailable**, for example on some cloud-provider deployments. Fall back to disabling unused servers. Note which tools you lost access to; that is the real trade-off.
 - **You cannot tell which servers are loaded.** Claude Code: `/mcp`. Cursor and Copilot: your MCP settings panel.
 
 The reference answers are in [solution/solution.md](solution/solution.md).
