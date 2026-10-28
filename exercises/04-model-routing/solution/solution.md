@@ -1,17 +1,17 @@
-# Solution: Route and Compare
+# Solution: Escalate and Compare
 
 ## What usually happens
 
-Run B wins on cost for most people, by somewhere between 40% and 70%, with the same pass rate. The escalations cluster on exactly two tasks: **T3**, because the refactor spans three files and has a structural acceptance test, and **T8** if you add it, because a concurrency bug is genuinely hard.
+Run B usually wins on cost at the same pass rate. The one published measurement of this policy is on the effort dial: Anthropic ran Claude Opus 5.5 on SWE-bench Pro at low effort with failures re-run at high, and it came out about 40% cheaper than everything at high, at a slightly better pass rate. On the model dial there is no published number; the ranking flips by workload, which is why the exercise measures rather than tells.
 
-T1, T2, T4 and T7 almost never need a frontier model. T1 is one character. T7 is writing tests against a module whose branches are already visible.
+The escalations cluster on **T3**, because the refactor spans three files and has a structural acceptance test, and on **T8** if you add it, because a concurrency bug is genuinely hard. T1 and T4 almost never need a frontier model. T1 is one character.
 
 ## When Run B loses
 
 It happens in most cohorts, to at least one person, and it is the most useful result in the room. Two causes:
 
 1. **A task mix that is mostly hard.** Every cheap first attempt is a tax. If four of your six tasks escalate, you paid the cheap rate four times for nothing and the frontier rate anyway.
-2. **Escalating mid-task.** Switching models rewrites the cached prefix at the 1.25x write rate. Escalate between tasks.
+2. **Escalating mid-session.** Switching models rewrites the cached prefix at the cache-write rate, and on Copilot's production traffic the cache hit rate after a model switch was about 8%. Escalate as a fresh session.
 
 If your B run lost, say what your mix looked like. The pattern is conditional, not universal, and the condition is worth more to the room than the result.
 
@@ -41,15 +41,6 @@ Shipping and inventory follow the same shape, one `call_with_retry` per method, 
 The acceptance test is structural: it reads the source of all three modules and fails if any still contains a `for attempt in range(` loop or a direct `time.sleep(`. Behaviour is pinned separately by `tests/test_integrations.py`, which must stay green.
 
 **Why agents get this wrong.** A cheap model given all three files will often write a new helper rather than find the existing one, leaving two retry implementations. The acceptance test catches the loops but not the duplication, so read the diff.
-
-### T7, cover `currency.py`
-
-The uncovered branches are the ones nobody thinks about: zero-decimal currencies, three-decimal currencies, the unsupported-currency error, `split_evenly`, `format_amount` and `truncate_to_minor`. A reference test file that takes the module from 52% to 100% is in [test_currency_extra.py](test_currency_extra.py).
-
-```bash
-cp exercises/04-model-routing/solution/test_currency_extra.py tests/
-make coverage
-```
 
 ### T8, the cache warmer race
 
@@ -85,7 +76,6 @@ self._claimed: Set[str] = set()
 |---|---|
 | T1 bug, one character | cheapest |
 | T2 feature, one file | cheapest |
-| T7 test coverage | cheapest |
 | T4 feature, two files | mid |
 | T6 bug, two files | mid |
 | T3 refactor, three files | mid, escalating on failure |
@@ -94,5 +84,6 @@ self._claimed: Set[str] = set()
 ## Common wrong turns
 
 - **Forgetting to reset between runs.** Run B starts from a clean tree. If you do not reset, B inherits A's work and looks free.
+- **Giving a run one session.** One session per attempt, as in every other exercise. A single session for all of Run B cannot be split by task, and the escalation share disappears into the total.
 - **Counting only successful attempts in Run B.** The failed cheap attempts are the cost of the strategy. Include them or the comparison is dishonest.
 - **Declaring a winner from one task.** Six tasks is already a small sample. The number worth taking home is the pattern, not the percentage.

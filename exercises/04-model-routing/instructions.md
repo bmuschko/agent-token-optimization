@@ -1,74 +1,119 @@
-# Exercise 4: Route and Compare
+# Exercise 4: Escalate and Compare
 
 **Section 4 · 14 minutes · work alone**
 
 ## Objective
 
-Measure escalate-on-failure against frontier-everything on your own task mix, on both cost and pass rate. You are not being told which wins. You are measuring which wins for you.
+Section 4 said the model and the effort setting are the two biggest dials you control, and that the cheapest policy is to start low and spend more only on the tasks that fail. This exercise measures that policy against running everything on the frontier, on your own tasks, on both axes: cost per completed task and pass rate. You are not being told which wins. You are measuring which wins for you.
 
-## Steps
+## Before you start
 
-### Run A, the control
-
-Work **T1, T2, T3, T4, T6 and T7**, every task with an acceptance test except T8, entirely on your **frontier** model. Record total cost and pass rate.
-
-### Run B, the routed version
-
-Reset the repo (`git checkout -- src tests` or `git stash`) and work the same six tasks on the **cheapest capable** model, escalating a task to the frontier model only after its acceptance tests fail **twice**.
-
-### How to measure each run
-
-This exercise compares money, and the proxy does not report money spent, only money avoided. tokscale prices a whole session, output tokens and cache included, which is what cost per completed task needs, and it does so for every agent. Give Run A and Run B their own sessions so each lands on its own row, and read each row exactly as in Exercise 1:
+Nothing new to install. Reset the repository so both runs start from the same tree, and reset it again between the runs:
 
 ```bash
-COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,session,model
+git checkout -- src tests
+make test             # green
 ```
 
-One more look is worth taking after Run B. Grouping by model instead of session splits the day's spend by model, which tells you how much of the routed run the escalations to the frontier model ate:
+Pick the two settings for the runs before you start, so you are not choosing mid-task:
+
+- **The frontier setting** for Run A: the strongest model your tool offers, at its default effort.
+- **The cheap setting** for Run B: the cheapest capable model from the tier slide, Haiku 5.5, GPT-6 Luna or Composer 2.5, at its default effort. If your tool does not let you pick the model, use your usual model at **low effort** instead; the policy is the same on either dial, and Anthropic's published measurement is on the effort one.
+
+Where to set them:
+
+| Agent | Model | Effort |
+|---|---|---|
+| Claude Code | `/model`, or `claude --model <name>` when starting the session | `/effort low` or `/effort high`, at the start of the session |
+| Copilot in VS Code | the model picker above the chat input, per request | not exposed on every model; use the model dial |
+| Copilot CLI | `/model` | not exposed on every model; use the model dial |
+| Cursor | the model picker; pick a model explicitly rather than Auto, so you know which one ran | not exposed; use the model dial |
+
+"Cheapest capable" means the cheapest model that passes T1 on the first attempt. If your cheap setting fails T1, step up one tier and start Run B again from there; that tier is your floor, and it is worth noting.
+
+## The measurement
+
+Each attempt at a task is its own session, started, verified and read exactly as in Exercise 1, so each lands on its own tokscale row. Run A is one row per task. Run B is one row per task plus one row for every escalation, because an escalation is a **fresh session** on the stronger setting, not the same session with the model switched: switching mid-session rewrites the cache, and a fresh session builds a short one. A run's cost is the sum of its rows, failed attempts included.
+
+A task **passes** when `make task` and `make test` are both green. Cost per completed task is the run's cost divided by the tasks that passed, as in Exercise 2.
+
+Write down the wall-clock time of each run as well. Latency is the cost the money column does not show, and the cheap-first policy pays it on every failure.
+
+After Run B, one more view: grouping tokscale by model instead of session splits the run's spend by model, which is how much of it the escalations ate.
 
 ```bash
 COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,model
 ```
 
-### Compare
+## Steps
 
-| | Run A | Run B |
-|---|---|---|
-| Total cost | | |
-| Tasks passing | | |
-| **Cost per completed task** | | |
+1. **Run A, frontier only.** The control, on the frontier setting. Work three tasks, one per cost situation from Section 2, each in a fresh session:
 
-Post your two cost-per-completed-task numbers in chat, **even if B lost**.
+   | Task | Situation | Verify |
+   |---|---|---|
+   | T1 | a change in one known place | `make task T=t1` |
+   | T4 | a change across two files | `make task T=t4` |
+   | T3 | a change across three files, with a structural acceptance test | `make task T=t3` |
 
-## The tasks
+   Use the same prompt for a task in both runs, so the setting is the only difference. These are scoped the way Exercise 3 taught; phrase them your own way if you like, but keep the file names.
 
-| Task | Kind | Verify |
-|---|---|---|
-| T1 | bug, one file | `make task T=t1` |
-| T2 | feature, one file | `make task T=t2` |
-| T3 | refactor, three files | `make task T=t3` |
-| T4 | feature, two files | `make task T=t4` |
-| T6 | bug, two files | `make task T=t6` |
-| T7 | test coverage | `make coverage` |
+   > **T1** The volume discount tiers in `src/orderly/pricing/discount.py` are supposed to be inclusive of their thresholds, but an order of exactly $100.00 doesn't get the 5% rate. Fix the off-by-one bug. Verify with `make task T=t1` and `make test`.
 
-T7 is done when `src/orderly/pricing/currency.py` reaches 95% line coverage. It starts at 52%.
+   > **T4** `list_orders` in `src/orderly/api/orders.py` returns every order. Add `limit` and `offset` parameters, and include `total` and `has_more` in the response. `src/orderly/utils/pagination.py` already has the clamping and slicing helpers; use them. Verify with `make task T=t4` and `make test`.
 
-## What "cheapest capable" means
+   > **T3** The same retry loop with exponential backoff is copy-pasted into the methods of `src/orderly/integrations/payments.py`, `shipping.py` and `inventory.py`. `src/orderly/utils/retry.py` already has a `call_with_retry` helper that nothing uses. Replace every inline loop with it, without changing behaviour, and do not write a new helper. `tests/test_integrations.py` must stay green. Verify with `make task T=t3` and `make test`.
 
-Not the cheapest model on the menu. The cheapest model that passes T1, T2 and T7 on the first attempt. Find that model and pin it.
+   T3's "do not write a new helper" is deliberate: cheap models often write a second helper, which the structural test cannot catch, and both runs should be held to the same bar.
+
+   Read each session's row and note cost, attempts and pass or fail.
+
+2. **Reset.** `git checkout -- src tests`, then `make test` to confirm green and `make task T=t1` to confirm red.
+
+3. **Run B, escalate on failure.** Same tasks, same order, fresh session each, starting on the cheap setting. A task moves up a tier only when its tests say so. For every task:
+
+   1. Attempt it on the cheap setting. Verify. If both commands are green, note the row and move on.
+   2. If a test is red, attempt it once more on the **same** setting, in a new session, with the failing test output in the prompt. This second attempt is the course's addition; Anthropic's measured policy escalates on the first failure, and you can skip this step to match it.
+   3. If it is still red, **escalate**: a fresh session on the next tier up, with the failing test output in the prompt. With only two tiers in play that is the frontier setting; note that it is a two-tier jump.
+
+   For both the retry and the escalation, send the task's prompt again with one paragraph added at the end, and paste the test output verbatim rather than describing it:
+
+   > The previous attempt left these tests failing:
+   > ```
+   > <paste the failing test output>
+   > ```
+   > Fix that without undoing what already passes.
+
+   Every attempt is a row. Note all of them, including the ones that failed.
+
+4. **Compare.**
+
+   | | Run A, frontier only | Run B, escalate on failure |
+   |---|---|---|
+   | Total cost, all attempts | | |
+   | Tasks passing, of 3 | | |
+   | **Cost per completed task** | | |
+   | Wall-clock time | | |
+   | Tasks that escalated | | |
+
+5. **Post in chat:** both cost-per-completed-task numbers, both pass counts, and which tasks escalated, **even if B lost**. Then answer for yourself: which setting would you use on Monday, and for which of the three situations?
 
 ## Done when
 
-Two complete runs and a defensible answer to: which route would you use on Monday, and for which kinds of task?
+- Two complete runs over the same tasks, every attempt noted
+- Cost per completed task and pass rate for each
+- An answer to: which setting on Monday, and for what
 
 ## Expect
 
-**Run B takes longer in wall-clock time even when it costs less.** That latency is a real cost. Write it down next to the money.
+Run B usually wins on cost at the same pass rate, with the escalations clustered on T3. Anthropic's measurement of the same policy on the effort dial, Opus 5.5 on SWE-bench Pro, came out about 40% cheaper than everything at high, at a slightly better pass rate. Yours may not: the ranking flips by task mix, and a mostly-hard mix turns the cheap attempt into a tax on every task. A Run B that lost is a legitimate result and the most useful one in the room, provided you say what your mix looked like.
 
-If you are running short, cut the task list to T1, T2, T4 and T7. Never cut the control run; without it you have nothing to compare against.
+**Run B takes longer in wall-clock time even when it costs less.** Every failure costs two runs of time. Write it down next to the money.
 
 ## If you get stuck
 
-- **Escalating mid-task made things more expensive.** Switching models invalidates the prefix cache. Escalate at a task boundary, not in the middle of a turn.
+- **Three tasks per run is still too many.** Drop T3 from both runs. T1 and T4 give you the cheap and the mid situation; you lose the task most likely to escalate, so say so when you post.
+- **Escalating mid-session made things more expensive.** Switching models or, on most models, effort invalidates the prefix cache. Escalate as a fresh session; it is its own row and its own cache.
+- **Your tool exposes neither model nor effort.** You cannot run this exercise's comparison. Run the three tasks once, note the rows, and compare cost per completed task against your neighbour's two runs in chat.
+- **The cheap setting passed everything.** That is a result: your floor is lower than you thought. Post it.
 
 The reference answers are in [solution/solution.md](solution/solution.md).

@@ -1,6 +1,6 @@
 # Tasks
 
-Eight tasks seeded into this repository. You work them with your agent during the exercises. Each one has acceptance tests that are **red on a fresh clone**.
+Seven tasks seeded into this repository. You work them with your agent during the exercises. Each one has acceptance tests that are **red on a fresh clone**.
 
 ```bash
 make task T=t1        # acceptance tests for T1
@@ -17,7 +17,6 @@ A task is done when both are satisfied.
 | T4 | Feature | Add pagination to `list_orders` | 2 files | `make task T=t4` |
 | T5 | Exploration | Where is rate limiting, and how do I change the limit | read only | an answer |
 | T6 | Bug | Missing null handling across parser and validator | 2 files | `make task T=t6` |
-| T7 | Test | Cover the untested branches in `currency.py` | 1 test file | `make coverage` |
 | T8 | Bug | Race condition in the cache warmer | subtle | `make task T=t8` |
 
 ## T1 - Tier boundary off by one
@@ -60,16 +59,6 @@ A complete answer names the file, the constant, and the fact that the limit can 
 `src/orderly/ingest/parser.py` and `src/orderly/ingest/validator.py`
 
 Partners omit optional fields. The parser passes them through as `None`, and the validator calls `len()` on them, so a record without `notes` raises `TypeError` instead of validating cleanly. The bug spans both files; scoping to one of them produces a defensive patch rather than a fix.
-
-## T7 - Cover `currency.py`
-
-`src/orderly/pricing/currency.py` sits at **52%** line coverage. Get it to **95%** by adding tests, without changing the module.
-
-```bash
-make coverage
-```
-
-The uncovered branches are the ones nobody thinks about: zero-decimal currencies, three-decimal currencies, the unsupported-currency error, and the formatting and splitting helpers.
 
 ## T8 - Race in the cache warmer
 

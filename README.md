@@ -20,7 +20,7 @@ Please do step 1 at least a day ahead, especially on a corporate network. The fi
 | [`tests/`](tests) | The regression suite. Green on a fresh clone and it must stay that way. |
 | [`tests/tasks/`](tests/tasks) | Acceptance tests for the seeded tasks. Red until you do the work. |
 | [`exercises/`](exercises) | Six exercises, each with `instructions.md` and a `solution/`. |
-| [`TASKS.md`](TASKS.md) | The eight tasks T1 to T8 you work with your agent. |
+| [`TASKS.md`](TASKS.md) | The seven tasks you work with your agent. |
 
 ## The two commands
 

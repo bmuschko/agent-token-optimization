@@ -4,7 +4,7 @@ help:
 	@echo "make install    create the environment and install test tooling"
 	@echo "make test       run the regression suite (must stay green)"
 	@echo "make task T=t1  run the acceptance tests for one task"
-	@echo "make coverage   check coverage of currency.py (task T7)"
+	@echo "make coverage   check coverage of currency.py"
 	@echo "make verify     check this machine is set up correctly"
 
 install:
