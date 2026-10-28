@@ -7,7 +7,7 @@ Six hands-on exercises, in the order they run during the course. Each folder has
 | 1 | [Establish your baseline](01-baseline-measurement/instructions.md) | 1 | 6 min |
 | 2 | [Break down your burn](02-attribute-the-burn/instructions.md) | 2 | 10 min |
 | 3 | [Scope it down and measure](03-context-discipline/instructions.md) | 3 | 14 min |
-| 4 | [Escalate and compare](04-model-routing/instructions.md) | 4 | 14 min |
+| 4 | [Escalate and compare](04-escalate-and-compare/instructions.md) | 4 | 14 min |
 | 5 | [Measure the tool tax](05-tool-definition-tax/instructions.md) | 5 | 10 min |
 | 6 | [Compaction, memory and your plan](06-compaction-and-memory/instructions.md) | 5 | 6 min |
 
