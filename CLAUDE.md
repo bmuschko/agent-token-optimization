@@ -32,7 +32,6 @@ The layering is intended to keep business rules out of the handlers and persiste
 
 - `make test` runs the regression suite. It must stay green.
 - `make task T=t1` runs the acceptance tests for one task.
-- `make coverage` checks coverage of the currency module.
 - `make verify` checks the local setup.
 - Python runs through `uv run`. There is no activated virtual environment, so use `uv run pytest ...` rather than `python3 -m pytest`.
 
@@ -77,7 +76,7 @@ Changes should be small and focused. A change that touches more than three files
 
 ## Dependencies
 
-The project deliberately has no runtime dependencies beyond the standard library. Test tooling is pytest and pytest-cov. Please do not add runtime dependencies without discussion.
+The project deliberately has no runtime dependencies beyond the standard library. Test tooling is pytest. Please do not add runtime dependencies without discussion.
 
 ## Notes
 

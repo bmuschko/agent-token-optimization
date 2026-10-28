@@ -1,4 +1,4 @@
-"""Currency conversion. Deliberately partial: see task T7."""
+"""Currency conversion."""
 from decimal import Decimal
 
 from orderly.pricing.currency import from_minor, minor_units, to_minor

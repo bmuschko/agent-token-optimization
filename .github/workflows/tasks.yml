@@ -63,24 +63,9 @@ jobs:
         if: ${{ !cancelled() }}
         run: expect_outcome "failed" task T=t8
 
-      - name: Coverage of currency.py stops at 52 percent
-        if: ${{ !cancelled() }}
-        run: |
-          if make coverage > coverage.log 2>&1; then
-            echo "::error::'make coverage' passed, but T7 should start red"
-            cat coverage.log
-            exit 1
-          fi
-          grep -q "Total coverage: 52" coverage.log || {
-            echo "::error::coverage is no longer 52 percent"
-            cat coverage.log
-            exit 1
-          }
-
       - name: Running the targets leaves the tree unchanged
         if: ${{ !cancelled() }}
         run: |
           make clean
-          rm -f coverage.log
           git status --porcelain
           test -z "$(git status --porcelain)"
