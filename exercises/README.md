@@ -8,8 +8,8 @@ Six hands-on exercises, in the order they run during the course. Each folder has
 | 2 | [Break down your burn](02-attribute-the-burn/instructions.md) | 2 | 10 min |
 | 3 | [Scope it down and measure](03-context-discipline/instructions.md) | 3 | 14 min |
 | 4 | [Escalate and compare](04-escalate-and-compare/instructions.md) | 4 | 14 min |
-| 5 | [Measure the tool tax](05-tool-definition-tax/instructions.md) | 5 | 10 min |
-| 6 | [Compaction, memory and your plan](06-compaction-and-memory/instructions.md) | 5 | 6 min |
+| 5 | [Shrink a tool result](05-shrink-a-tool-result/instructions.md) | 5 | 10 min |
+| 6 | [Tool output compression](06-tool-output-compression/instructions.md) | 5 | 7 min |
 
 ## Read the solutions after you have your own number
 
@@ -32,14 +32,14 @@ Every exercise measures a delta, and a delta only means something if both sides 
 
 | Question | Tool | Exercises |
 |---|---|---|
-| How many input tokens did the agent send? | `headroom savings` | 5, 6 |
+| What did compression save on one request? | `headroom savings` | 6 |
 | What did it cost, and how much was output? | `npx tokscale@latest` | 1, 2, 3, 4 |
 | What made one session expensive? | `ccwhy` on Claude Code, the per-agent views in Exercise 2 | 2 |
-| What is in the window right now? | `/context` | 2, 5 |
+| What is in the window right now, and what did one call add? | `/context` | 2, 5 |
 
 The rule underneath: **every number you record comes from `tokscale`; the proxy is for per-turn views.**
 
-`headroom savings` counts every input token the proxy forwarded, per request, with the cached history that is resent every turn included, and it does so for any agent. That makes it the instrument for the per-turn question in Exercise 6 and in Exercise 5. It reports savings rather than spend: in passthrough mode the line reads `saved 0 / N tokens`, and `N` is your number. The ledger behind it is cumulative and global, so run `headroom savings --reset` before every measured run.
+`headroom savings` counts every input token the proxy forwarded, per request, and every token it removed by compression before forwarding, and it does so for any agent it can proxy. That makes it the instrument for Exercise 6, where the question is what compression saved on one request. The ledger behind it is cumulative and global, so run `headroom savings --reset` before every measured run.
 
 `tokscale` prices a whole session, output tokens and cache read and write included, none of which the proxy reports, and it does so for every agent. One session per run keeps it isolated.
 

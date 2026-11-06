@@ -113,7 +113,7 @@ Either the VS Code extension or the CLI. In VS Code, the context window control 
 
 ## Headroom, the measuring proxy
 
-[Headroom](https://github.com/chopratejas/headroom) is the local proxy Exercises 5 and 6 route through. It measures tokens and, in Section 5, compresses tool output. It runs entirely on your machine.
+[Headroom](https://github.com/headroomlabs-ai/headroom) is the local proxy Exercise 6 routes through. It compresses tool output on the wire and reports what it forwarded and what it saved, per request. It runs entirely on your machine. Install it before the course; nothing before Exercise 6 needs it.
 
 ```bash
 uv tool install "headroom-ai[all]==0.40.0"
