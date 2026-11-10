@@ -17,8 +17,8 @@ It usually does, because the log compressor keeps the failure lines and the summ
 
 ## Where this sits in the order
 
-1. **Narrow the request.** The specific prompt, the summary flag. Free, and cannot lose what you chose to keep.
-2. **Automate the narrowing.** The hook or the rules line from Exercise 5. Free, and nobody has to remember.
+1. **Filter at the source.** The hook from Exercise 5, or the rules line where there is no hook. Free, nobody has to remember, and it cannot lose what you chose to keep.
+2. **Ask the CLI for the fields.** `gh pr view --json title,state --jq` returns two values, not a document. An MCP tool returns whatever its author decided.
 3. **Route the noisy step to a subagent.** The log lives in its window and only the summary comes back.
 4. **Compress what is left.** This exercise. For the output you do not control: JSON from an API you did not write, a log you cannot reshape, a tool that returns a document when you wanted two fields.
 

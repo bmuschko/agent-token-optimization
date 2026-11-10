@@ -27,10 +27,10 @@ The hook is the one to keep where it exists. Elsewhere the rules line is the bes
 
 ## What to do with it, in order
 
-1. **Narrow the request** when you can: the specific prompt, the summary flag. Costs nothing, cannot lose information you chose to keep.
-2. **Automate the narrowing** so nobody has to remember: the hook in Claude Code, a rules line elsewhere. The same pattern filters build output, lint output, anything with a known noise shape.
+1. **Filter at the source**: the hook in Claude Code, a rules line elsewhere, the prompt as a one-off. Costs nothing, nobody has to remember, and it cannot lose what you chose to keep. The same pattern filters build output, lint output, anything with a known noise shape.
+2. **Ask the CLI for the fields**: `gh pr view --json title,state --jq` returns two values, not a document.
 3. **Route the noisy step to a subagent** when it is noisy by nature (a full CI log, a doc fetch): the output lives in the subagent's window and only the summary comes back.
-4. **Compress what is left**, which is what the Headroom demo shows next, and what Exercise 6 measures through the proxy.
+4. **Compress what is left**, the output you do not control, which is what Exercise 6 measures through the proxy.
 
 ## Where this does not help
 

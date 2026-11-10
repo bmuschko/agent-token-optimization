@@ -1,8 +1,8 @@
 # agent-token-optimization
 
-Course repository for **Cutting Token Costs with AI Coding Agents**, an O'Reilly live training by [Benjamin Muschko](https://www.oreilly.com/pub/au/7768).
+Course repository for **Cutting Token Costs of AI Coding Agents**, an O'Reilly live training by [Benjamin Muschko](https://www.oreilly.com/pub/au/7768).
 
-You will drive your own coding agent against this repository for two hours, routed through a local proxy so you can see every token, and measure what your habits actually cost.
+You will drive your own coding agent against this repository for two hours and measure what your habits actually cost, with the agent's own context view and a session log reader, and once through a local proxy that compresses what your tools return.
 
 ## Start here
 
@@ -41,4 +41,4 @@ Budget roughly **$3** of your own token usage for the full session.
 
 ## Which agent
 
-Claude Code, Cursor, or GitHub Copilot. Any one is fine. Every exercise reads its numbers from the same tool, tokscale, and reads the window from the agent's own view. Two limits to know before you choose: Copilot in VS Code logs input and output tokens only, with no cache split, so its rows price every input token at full rate; and the Headroom proxy in Exercises 5 and 6 cannot see Cursor's traffic, which goes through Cursor's own servers, so Cursor users read those two exercises from the context indicator and the usage dashboard instead.
+Claude Code, Cursor, or GitHub Copilot. Any one is fine. Every exercise reads its numbers from the same tool, tokscale, and reads the window from the agent's own view. Two limits to know before you choose: Copilot in VS Code logs input and output tokens only, with no cache split, so its rows price every input token at full rate; and the Headroom proxy in Exercise 6 cannot see Cursor's traffic, which goes through Cursor's own servers, so Cursor users pair with a neighbour on a CLI agent for that one.
