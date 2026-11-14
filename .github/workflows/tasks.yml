@@ -16,6 +16,9 @@ jobs:
         with:
           enable-cache: true
 
+      - name: Setup check passes
+        run: make verify
+
       - name: Regression suite stays green
         run: make test
 
