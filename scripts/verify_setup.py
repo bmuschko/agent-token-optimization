@@ -109,7 +109,7 @@ def main():
     print("\nAgents and tooling\n")
     check_optional("headroom", "headroom",
                    'uv tool install "headroom-ai[all]==0.40.0", then run: headroom doctor')
-    check_optional("node", "node", "needed only for npx ccusage")
+    check_optional("node", "node", "needed only for npx tokscale")
     found_agent = any(shutil.which(c) for c in ("claude", "cursor", "copilot"))
     if found_agent:
         ok("a coding agent is on your PATH")
