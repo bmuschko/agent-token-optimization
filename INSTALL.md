@@ -9,7 +9,9 @@ Everything below should be done **before** the session, ideally a day ahead. Tot
 - [An AI coding agent](#an-ai-coding-agent)
 - [Usage analyzers](#usage-analyzers)
 - [Headroom, the compression proxy](#headroom-the-compression-proxy)
+- [Credentials](#credentials)
 - [Verify everything](#verify-everything)
+- [If something goes wrong](#if-something-goes-wrong)
 
 ## Prerequisites
 
@@ -18,6 +20,7 @@ Everything below should be done **before** the session, ideally a day ahead. Tot
 | Git | any recent | cloning this repo |
 | uv | any recent | runs the sample project, its tests, and Headroom |
 | Node.js | 20 or later | `npx tokscale` |
+| jq | any recent | the test output hook in Exercise 5, optional |
 
 You do not install Python yourself. `uv` finds a compatible interpreter on the machine or downloads one, and creates the project environment on first use.
 
@@ -38,7 +41,7 @@ uv --version
 node --version
 ```
 
-Node is only needed for `tokscale`, which Exercises 1 to 4 read their numbers from, so do install it.
+Node is only needed for `tokscale`, which Exercises 1 to 4 read their numbers from, so do install it. jq is only needed for the hook in Exercise 5; install it with your package manager, for example `brew install jq`.
 
 ## The repository
 
@@ -62,14 +65,14 @@ make test
 Every `make` target is a thin wrapper over `uv run`, so there is nothing to activate. On Windows, which has no `make`, run the underlying commands directly:
 
 ```powershell
-uv run pytest                                  # make test
-uv run pytest tests/tasks/test_t1_*.py -v      # make task T=t1
-uv run python scripts/verify_setup.py          # make verify
+uv run pytest                                                # make test
+uv run pytest tests/tasks/test_t1_discount_boundary.py -v    # make task T=t1
+uv run python scripts/verify_setup.py                        # make verify
 ```
 
 ## An AI coding agent
 
-You need **one** of these. All exercises work with any of them.
+You need **one** of these. Every exercise works with any of them, with two exceptions: Exercise 4 needs an agent that lets you choose the model or the effort, and Exercise 6 needs a CLI agent, so Cursor users pair with a neighbour for it.
 
 ### Claude Code
 
@@ -105,13 +108,19 @@ Claude Code requires a Pro, Max, Team, Enterprise, or Console account. The free 
 
 Download from [cursor.com](https://cursor.com) and sign in. For the session, know three things: where your usage dashboard is, which model your Auto setting resolves to ([Models and pricing](https://cursor.com/docs/models-and-pricing)), and that clicking the context ring in the chat input opens a breakdown of the window by rules, tools, MCP, skills and conversation.
 
+Connect tokscale to your Cursor account once, ahead of the session:
+
+```bash
+npx tokscale@latest cursor login
+```
+
 ### GitHub Copilot
 
 Either the VS Code extension or the CLI. In VS Code, the context window control in the chat input shows the session's credits and cumulative tokens, hovering a response shows that turn's credits, and the Agent Debug Logs and Cache Explorer add tool calls and cache hit rates. The CLI has `/context` and `/usage`, and logs per-request usage under `~/.copilot/`, which tokscale and `scripts/copilot_session.py` read. Billing reference: [Usage-based billing for individuals](https://docs.github.com/copilot/concepts/billing/usage-based-billing-for-individuals).
 
 ## Usage analyzers
 
-All optional, all read the session logs your agent already writes, and tokscale needs no installation. Exercise 2 says when to use which.
+All of them read the session logs your agent already writes. tokscale is the instrument Exercises 1 to 4 record their numbers from and needs nothing beyond Node. ccwhy and the per-agent helpers are optional; Exercise 2 says when to use them.
 
 ### tokscale, how much did I spend
 
@@ -154,7 +163,7 @@ Wrap your agent in one command:
 headroom wrap claude        # also: codex, copilot, cursor, aider, opencode
 ```
 
-`headroom wrap cursor` prints a configuration to paste into Cursor rather than launching it, but Cursor sends every request through its own servers, so a proxy on your machine never sees them; that configuration only works with your own API key and a proxy reachable from the internet. Cursor users skip the proxy and read Exercises 5 and 6 from the context ring and the usage dashboard.
+`headroom wrap cursor` prints a configuration to paste into Cursor rather than launching it, but Cursor sends every request through its own servers, so a proxy on your machine never sees them; that configuration only works with your own API key and a proxy reachable from the internet. Cursor users skip the proxy and pair with a neighbour on a CLI agent for Exercise 6.
 
 Or run the proxy standalone and point your agent at it. The example below is for Claude Code; other agents use a different environment variable:
 
@@ -183,7 +192,7 @@ Whatever your agent already uses. An Anthropic account for Claude Code, your Cur
 make verify
 ```
 
-This checks that `uv` is present and has a Python 3.10 or later, that the package imports, that the regression suite passes, and that the optional tools are on your PATH. It prints a green check when the required pieces are in place and a note for anything optional that is missing.
+This checks that `uv` is present and has a Python 3.10 or later, that the package imports, that the regression suite passes, that the acceptance tests are still red, and that Node, Headroom and a coding agent are on your PATH. It prints a green check when the required pieces are in place and a note for anything else that is missing.
 
 ## If something goes wrong
 
