@@ -9,8 +9,8 @@ Run [`make verify`](Makefile) when you are finished. It prints a green check whe
 - [Prerequisites](#prerequisites)
 - [The repository](#the-repository)
 - [An AI coding agent](#an-ai-coding-agent)
-- [Headroom, the measuring proxy](#headroom-the-measuring-proxy)
 - [Usage analyzers](#usage-analyzers)
+- [Headroom, the compression proxy](#headroom-the-compression-proxy)
 - [Verify everything](#verify-everything)
 
 ## Prerequisites
@@ -111,7 +111,36 @@ Download from [cursor.com](https://cursor.com) and sign in. For the session, kno
 
 Either the VS Code extension or the CLI. In VS Code, the context window control in the chat input shows the session's credits and cumulative tokens, hovering a response shows that turn's credits, and the Agent Debug Logs and Cache Explorer add tool calls and cache hit rates. The CLI has `/context` and `/usage`, and logs per-request usage under `~/.copilot/`, which tokscale and `scripts/copilot_session.py` read. Billing reference: [Usage-based billing for individuals](https://docs.github.com/copilot/concepts/billing/usage-based-billing-for-individuals).
 
-## Headroom, the measuring proxy
+## Usage analyzers
+
+All optional, all read the session logs your agent already writes, and tokscale needs no installation. Exercise 2 says when to use which.
+
+### tokscale, how much did I spend
+
+One row per session for Claude Code, Codex CLI, Copilot CLI, Gemini CLI, Cursor and some sixty other agents, priced from the same public table:
+
+```bash
+COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,session,model
+```
+
+Repository: [junhoyeo/tokscale](https://github.com/junhoyeo/tokscale). The helper `scripts/session_row.py` pulls one session's full row out of its JSON.
+
+### ccwhy, why did one Claude Code session burn
+
+Claude Code only. Its per-turn table shows what every request resent and which tools ran. The project is still called `claude-usage-analyzer` on GitHub; the command and the Homebrew formula are `ccwhy`.
+
+```bash
+brew install SingggggYee/tap/ccwhy    # macOS
+cargo install ccwhy                   # any platform with Rust
+```
+
+Prebuilt binaries are on the [releases page](https://github.com/SingggggYee/claude-usage-analyzer/releases/latest). Then `ccwhy sessions` lists sessions by cost and `ccwhy session <id>` explains one.
+
+### Per-agent helpers
+
+Copilot CLI logs usage per request and every tool call with its arguments under `~/.copilot/session-state/`; `scripts/copilot_session.py` prints both for a session. Copilot in VS Code has the Agent Debug Logs and [Agent Session Viewer](https://github.com/cuteribs/agent-session-viewer), `npx @cuteribs/agent-session-viewer`. Cursor keeps a transcript of every agent session under `~/.cursor/projects/<project>/agent-transcripts/`, with tool calls but no token counts.
+
+## Headroom, the compression proxy
 
 [Headroom](https://github.com/headroomlabs-ai/headroom) is the local proxy Exercise 6 routes through. It compresses tool output on the wire and reports what it forwarded and what it saved, per request. It runs entirely on your machine. Install it before the course; nothing before Exercise 6 needs it.
 
@@ -146,40 +175,9 @@ headroom dashboard   # live view, proxy must be running
 
 The version is **pinned** in the install command above so the whole room is on the same build. `headroom --version` should print 0.40.0.
 
-## Usage analyzers
-
-All optional, all read the session logs your agent already writes, and tokscale needs no installation. Exercise 2 says when to use which.
-
-### tokscale, how much did I spend
-
-One row per session for Claude Code, Codex CLI, Copilot CLI, Gemini CLI, Cursor and some sixty other agents, priced from the same public table:
-
-```bash
-COLUMNS=200 npx tokscale@latest --light --no-spinner --today --group-by client,session,model
-```
-
-Repository: [junhoyeo/tokscale](https://github.com/junhoyeo/tokscale). The helper `scripts/session_row.py` pulls one session's full row out of its JSON.
-
-### ccwhy, why did one Claude Code session burn
-
-Claude Code only. Its per-turn table shows what every request resent and which tools ran. The project is still called `claude-usage-analyzer` on GitHub; the command and the Homebrew formula are `ccwhy`.
-
-```bash
-brew install SingggggYee/tap/ccwhy    # macOS
-cargo install ccwhy                   # any platform with Rust
-```
-
-Prebuilt binaries are on the [releases page](https://github.com/SingggggYee/claude-usage-analyzer/releases/latest). Then `ccwhy sessions` lists sessions by cost and `ccwhy session <id>` explains one.
-
-### Per-agent helpers
-
-Copilot CLI logs usage per request and every tool call with its arguments under `~/.copilot/session-state/`; `scripts/copilot_session.py` prints both for a session. Copilot in VS Code has the Agent Debug Logs and [Agent Session Viewer](https://github.com/cuteribs/agent-session-viewer), `npx @cuteribs/agent-session-viewer`. Cursor keeps a transcript of every agent session under `~/.cursor/projects/<project>/agent-transcripts/`, with tool calls but no token counts.
-
 ## Credentials
 
 Whatever your agent already uses. An Anthropic account for Claude Code, your Cursor subscription, or your Copilot subscription. Nothing extra is needed for this course.
-
-Budget roughly **$3** of token usage for the full session.
 
 ## Verify everything
 
@@ -188,14 +186,6 @@ make verify
 ```
 
 This checks that `uv` is present and has a Python 3.10 or later, that the package imports, that the regression suite passes, and that the optional tools are on your PATH. It prints a green check when the required pieces are in place and a note for anything optional that is missing.
-
-Then confirm the proxy separately:
-
-```bash
-headroom doctor
-```
-
-Both should be green before the session starts.
 
 ## If something goes wrong
 

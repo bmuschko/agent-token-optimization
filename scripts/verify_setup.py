@@ -122,8 +122,7 @@ def main():
         print(f"{RED}{required_failures} required check(s) failed.{RESET} "
               "Each line above names its fix.\n")
         return 1
-    print(f"{GREEN}Required checks passed.{RESET} "
-          "Run 'headroom doctor' to confirm proxy routing.\n")
+    print(f"{GREEN}Required checks passed.{RESET}\n")
     return 0
 
 

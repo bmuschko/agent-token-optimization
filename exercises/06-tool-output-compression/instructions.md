@@ -8,7 +8,7 @@ Put the Headroom proxy between your agent and the API, send the same noisy tool 
 
 ## Before you start: the proxy enters here
 
-This is the one exercise that needs the Headroom proxy. You installed it from [INSTALL.md](../../INSTALL.md#headroom-the-measuring-proxy) before the course; if not, do that first, it is one command.
+This is the one exercise that needs the Headroom proxy. You installed it from [INSTALL.md](../../INSTALL.md#headroom-the-compression-proxy) before the course; if not, do that first, it is one command.
 
 Remove whatever Exercise 5 left behind, so the test log arrives unfiltered and compression has something to work on:
 

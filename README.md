@@ -35,10 +35,6 @@ A task is done when its acceptance tests pass **and** the regression suite is st
 
 The rules file in this repository is deliberately overgrown. It is just over eighty lines, most of which earn nothing, and it is the raw material for Exercise 3. Do not take it as a model to copy. The lean version that survives the exercise is in [`exercises/03-context-discipline/solution/CLAUDE.lean.md`](exercises/03-context-discipline/solution/CLAUDE.lean.md).
 
-## Cost
-
-Budget roughly **$3** of your own token usage for the full session.
-
 ## Which agent
 
 Claude Code, Cursor, or GitHub Copilot. Any one is fine. Every exercise reads its numbers from the same tool, tokscale, and reads the window from the agent's own view. Two limits to know before you choose: Copilot in VS Code logs input and output tokens only, with no cache split, so its rows price every input token at full rate; and the Headroom proxy in Exercise 6 cannot see Cursor's traffic, which goes through Cursor's own servers, so Cursor users pair with a neighbour on a CLI agent for that one.
