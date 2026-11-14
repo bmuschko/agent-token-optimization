@@ -2,8 +2,6 @@
 
 Everything below should be done **before** the session, ideally a day ahead. Total time is about fifteen minutes on a normal network.
 
-Run [`make verify`](Makefile) when you are finished. It prints a green check when the repo, Python, and the test suite are all working.
-
 ## Contents
 
 - [Prerequisites](#prerequisites)
