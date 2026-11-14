@@ -16,9 +16,6 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install
-        run: make install
-
       - name: Regression suite stays green
         run: make test
 

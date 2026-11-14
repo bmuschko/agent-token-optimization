@@ -16,8 +16,5 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install
-        run: make install
-
       - name: Setup check passes
         run: make verify
