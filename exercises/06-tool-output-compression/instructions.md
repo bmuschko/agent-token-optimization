@@ -1,6 +1,6 @@
 # Exercise 6: Tool Output Compression
 
-**Section 5 · 7 minutes · work alone**
+**Section 5 · 7 minutes**
 
 ## Objective
 

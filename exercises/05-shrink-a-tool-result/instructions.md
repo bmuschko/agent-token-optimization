@@ -1,6 +1,6 @@
 # Exercise 5: Shrink a Tool Result
 
-**Section 5 · 10 minutes · work alone**
+**Section 5 · 10 minutes**
 
 ## Objective
 
