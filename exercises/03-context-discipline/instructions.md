@@ -1,6 +1,6 @@
 # Exercise 3: Scope It Down and Measure
 
-**Section 3 · 14 minutes**
+**14 minutes**
 
 This is the longest hands-on block in the course and the one with the biggest payoff. Take the time.
 

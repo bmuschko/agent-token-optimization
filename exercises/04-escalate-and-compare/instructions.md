@@ -1,6 +1,6 @@
 # Exercise 4: Escalate and Compare
 
-**Section 4 · 14 minutes**
+**14 minutes**
 
 ## Objective
 

@@ -1,6 +1,6 @@
 # Exercise 1: Measure Your Baseline
 
-**Section 1 · 6 minutes**
+**6 minutes**
 
 ## What a baseline is
 

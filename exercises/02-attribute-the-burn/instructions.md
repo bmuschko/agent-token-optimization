@@ -1,6 +1,6 @@
 # Exercise 2: Break Down Your Burn
 
-**Section 2 · 10 minutes**
+**10 minutes**
 
 ## Objective
 
